@@ -68,8 +68,6 @@
             // $issue is already available from the controller
 
             // Include the reusable form partial
-            // ✅ CORRECT PATH: __DIR__ points to current directory (app/Views/issues/)
-            // So partials/form.php is in the same level
             require_once __DIR__ . '/partials/form.php';
             ?>
           </div>
@@ -82,8 +80,6 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
   <!-- Custom JavaScript Files -->
-  <!-- ✅ CORRECT PATH: These are relative to the browser URL (public/index.php) -->
-  <!-- Browser looks for: public/js/validation.js -->
   <script src="js/validation.js"></script>
   <script src="js/preview.js"></script>
 </body>

@@ -135,17 +135,24 @@ class IssueController
   }
 
   // Show edit form
+  // Loads existing issue data and displays edit form
   public function edit()
   {
+    // Get issue ID from URL parameter
     $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+
+    // Fetch issue data from database
     $issue = $this->issueModel->getById($id);
 
+    // If issue not found, redirect with error
     if (!$issue) {
       $_SESSION['errors'] = ["Issue not found"];
       header('Location: index.php');
       exit;
     }
 
+    // Load edit view and pass $issue data to it
+    // The view will automatically display existing values
     require_once __DIR__ . '/../Views/issues/edit.php';
   }
 

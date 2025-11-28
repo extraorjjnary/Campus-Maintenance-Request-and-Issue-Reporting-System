@@ -4,32 +4,40 @@
  * Form Partial - Reusable Issue Form
  * Used by both create.php and edit.php
  * 
- * Expected variables:
- * - $issue (array) - existing issue data for edit mode (can be null/empty for create)
- * - $action (string) - form action URL
+ * Expected variables from parent view:
+ * - $issue (array) - existing issue data for edit mode (empty array for create)
+ * - $action (string) - form action URL (e.g., 'index.php?action=store')
  * - $method (string) - form method (should always be POST)
  * - $isEdit (bool) - true if editing, false if creating
  */
 
-// Set default values for create mode
+// Set default values for create mode if not provided
 $isEdit = $isEdit ?? false;
 $issue = $issue ?? [];
 
-// Helper function to get old input or existing value
+/**
+ * Helper function: Get old input or existing value
+ * Priority: 1) Session old_data (validation errors), 2) Existing issue data (edit), 3) Default value
+ * 
+ * @param string $field - Field name (e.g., 'title', 'user_id')
+ * @param mixed $default - Default value if nothing found
+ * @return mixed - The value to display in the form
+ */
 function old($field, $default = '')
 {
   global $issue;
 
-  // Check for old session data (from validation errors)
+  // Priority 1: Check for old data from validation errors (most recent user input)
   if (isset($_SESSION['old_data'][$field])) {
     return $_SESSION['old_data'][$field];
   }
 
-  // Check for existing issue data (edit mode)
+  // Priority 2: Check for existing issue data (edit mode)
   if (isset($issue[$field])) {
     return $issue[$field];
   }
 
+  // Priority 3: Return default value
   return $default;
 }
 ?>
