@@ -330,104 +330,12 @@
     </div>
   </div>
 
+  <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    // Native JavaScript for Search and Filter functionality
-    const searchInput = document.getElementById('searchInput');
-    const statusFilter = document.getElementById('statusFilter');
-    const categoryFilter = document.getElementById('categoryFilter');
-    const userRoleFilter = document.getElementById('userRoleFilter');
-    const tableBody = document.getElementById('issuesTableBody');
-    const noResultsMessage = document.getElementById('noResultsMessage');
 
-    // Apply filters function
-    function applyFilters() {
-      const searchTerm = searchInput.value.toLowerCase();
-      const statusValue = statusFilter.value;
-      const categoryValue = categoryFilter.value;
-      const userRoleValue = userRoleFilter.value;
-
-      const rows = tableBody.querySelectorAll('tr:not(#noDataRow)');
-      let visibleCount = 0;
-
-      rows.forEach(row => {
-        const searchText = row.getAttribute('data-search-text') || '';
-        const status = row.getAttribute('data-status') || '';
-        const category = row.getAttribute('data-category') || '';
-        const userRole = row.getAttribute('data-user-role') || '';
-
-        let showRow = true;
-
-        // Search filter
-        if (searchTerm && !searchText.includes(searchTerm)) {
-          showRow = false;
-        }
-
-        // Status filter
-        if (statusValue && status !== statusValue) {
-          showRow = false;
-        }
-
-        // Category filter
-        if (categoryValue && category !== categoryValue) {
-          showRow = false;
-        }
-
-        // User role filter
-        if (userRoleValue && userRole !== userRoleValue) {
-          showRow = false;
-        }
-
-        if (showRow) {
-          row.style.display = '';
-          visibleCount++;
-        } else {
-          row.style.display = 'none';
-        }
-      });
-
-      // Show/hide no results message
-      if (visibleCount === 0 && rows.length > 0) {
-        noResultsMessage.style.display = 'block';
-      } else {
-        noResultsMessage.style.display = 'none';
-      }
-    }
-
-    // Event listeners for real-time filtering
-    searchInput.addEventListener('input', applyFilters);
-    statusFilter.addEventListener('change', applyFilters);
-    categoryFilter.addEventListener('change', applyFilters);
-    userRoleFilter.addEventListener('change', applyFilters);
-
-    // Clear all filters
-    function clearFilters() {
-      searchInput.value = '';
-      statusFilter.value = '';
-      categoryFilter.value = '';
-      userRoleFilter.value = '';
-      applyFilters();
-    }
-
-    // Filter by status when clicking stat cards
-    function filterByStatus(status) {
-      statusFilter.value = status;
-      applyFilters();
-      // Scroll to table
-      document.getElementById('issuesTable').scrollIntoView({
-        behavior: 'smooth'
-      });
-    }
-
-    // Auto-dismiss alerts after 5 seconds
-    setTimeout(function() {
-      const alerts = document.querySelectorAll('.alert');
-      alerts.forEach(alert => {
-        const bsAlert = new bootstrap.Alert(alert);
-        bsAlert.close();
-      });
-    }, 5000);
-  </script>
+  <!-- Custom JavaScript Files -->
+  <script src="js/feedbacks.js"></script>
+  <script src="js/filters.js"></script>
 </body>
 
 </html>

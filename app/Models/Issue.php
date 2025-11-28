@@ -46,10 +46,10 @@ class Issue
   public function getById($id)
   {
     $query = "SELECT * FROM " . $this->table . " WHERE id = ?";
-    $stmt = $this->conn->prepare($query);
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    $statement = $this->conn->prepare($query);
+    $statement->bind_param("i", $id);
+    $statement->execute();
+    $result = $statement->get_result();
 
     return $result->fetch_assoc();
   }
@@ -66,8 +66,8 @@ class Issue
                   (user_id, user_role, title, description, category, location, image) 
                   VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-    $stmt = $this->conn->prepare($query);
-    $stmt->bind_param(
+    $statement = $this->conn->prepare($query);
+    $statement->bind_param(
       "sssssss",
       $data['user_id'],
       $data['user_role'],
@@ -78,7 +78,7 @@ class Issue
       $data['image']
     );
 
-    if ($stmt->execute()) {
+    if ($statement->execute()) {
       return true;
     }
     return false;
@@ -97,8 +97,8 @@ class Issue
                       category = ?, location = ?, image = ? 
                   WHERE id = ?";
 
-    $stmt = $this->conn->prepare($query);
-    $stmt->bind_param(
+    $statement = $this->conn->prepare($query);
+    $statement->bind_param(
       "sssssssi",
       $data['user_id'],
       $data['user_role'],
@@ -110,17 +110,17 @@ class Issue
       $id
     );
 
-    return $stmt->execute();
+    return $statement->execute();
   }
 
   // Update status only
   public function updateStatus($id, $status)
   {
     $query = "UPDATE " . $this->table . " SET status = ? WHERE id = ?";
-    $stmt = $this->conn->prepare($query);
-    $stmt->bind_param("si", $status, $id);
+    $statement = $this->conn->prepare($query);
+    $statement->bind_param("si", $status, $id);
 
-    return $stmt->execute();
+    return $statement->execute();
   }
 
   // Delete issue
@@ -136,20 +136,20 @@ class Issue
     }
 
     $query = "DELETE FROM " . $this->table . " WHERE id = ?";
-    $stmt = $this->conn->prepare($query);
-    $stmt->bind_param("i", $id);
+    $statement = $this->conn->prepare($query);
+    $statement->bind_param("i", $id);
 
-    return $stmt->execute();
+    return $statement->execute();
   }
 
   // Get issue count by status
   public function getCountByStatus($status)
   {
     $query = "SELECT COUNT(*) as count FROM " . $this->table . " WHERE status = ?";
-    $stmt = $this->conn->prepare($query);
-    $stmt->bind_param("s", $status);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    $statement = $this->conn->prepare($query);
+    $statement->bind_param("s", $status);
+    $statement->execute();
+    $result = $statement->get_result();
     $row = $result->fetch_assoc();
 
     return $row['count'];
@@ -159,10 +159,10 @@ class Issue
   public function getCountByCategory($category)
   {
     $query = "SELECT COUNT(*) as count FROM " . $this->table . " WHERE category = ?";
-    $stmt = $this->conn->prepare($query);
-    $stmt->bind_param("s", $category);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    $statement = $this->conn->prepare($query);
+    $statement->bind_param("s", $category);
+    $statement->execute();
+    $result = $statement->get_result();
     $row = $result->fetch_assoc();
 
     return $row['count'];
@@ -172,10 +172,10 @@ class Issue
   public function getCountByUserRole($role)
   {
     $query = "SELECT COUNT(*) as count FROM " . $this->table . " WHERE user_role = ?";
-    $stmt = $this->conn->prepare($query);
-    $stmt->bind_param("s", $role);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    $statement = $this->conn->prepare($query);
+    $statement->bind_param("s", $role);
+    $statement->execute();
+    $result = $statement->get_result();
     $row = $result->fetch_assoc();
 
     return $row['count'];
@@ -222,14 +222,14 @@ class Issue
 
     $query .= " ORDER BY created_at DESC";
 
-    $stmt = $this->conn->prepare($query);
+    $statement = $this->conn->prepare($query);
 
     if (!empty($params)) {
-      $stmt->bind_param($types, ...$params);
+      $statement->bind_param($types, ...$params);
     }
 
-    $stmt->execute();
-    $result = $stmt->get_result();
+    $statement->execute();
+    $result = $statement->get_result();
 
     return $result->fetch_all(MYSQLI_ASSOC);
   }

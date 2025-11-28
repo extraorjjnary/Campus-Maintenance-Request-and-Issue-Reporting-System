@@ -291,28 +291,12 @@
     </div>
   </div>
 
+  <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    // Confirm status update
-    document.getElementById('statusForm').addEventListener('submit', function(e) {
-      const statusSelect = document.getElementById('statusSelect');
-      const newStatus = statusSelect.options[statusSelect.selectedIndex].text;
-      const confirmed = confirm('Are you sure you want to update the status to: ' + newStatus + '?');
 
-      if (!confirmed) {
-        e.preventDefault();
-      }
-    });
-
-    // Auto-dismiss alerts
-    setTimeout(function() {
-      const alerts = document.querySelectorAll('.alert');
-      alerts.forEach(alert => {
-        const bsAlert = new bootstrap.Alert(alert);
-        bsAlert.close();
-      });
-    }, 5000);
-  </script>
+  <!-- Custom JavaScript Files -->
+  <script src="js/status.js"></script>
+  <script src="js/feedbacks.js"></script>
 </body>
 
 </html>
