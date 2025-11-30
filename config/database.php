@@ -1,34 +1,40 @@
 <?php
-// Database configuration
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', 'walabalo');
-define('DB_NAME', 'campus_maintenance');
+
+/**
+ * Database Configuration - PDO Version
+ * Provides a single, reusable database connection using PDO
+ */
 
 class Database
 {
-  private $host = DB_HOST;
-  private $user = DB_USER;
-  private $pass = DB_PASS;
-  private $dbname = DB_NAME;
+  private $host = 'localhost';
+  private $db_name = 'campus_maintenance';
+  private $username = 'root';
+  private $password = 'walabalo';
   private $conn;
 
-  // Connect to database
-  public function connect()
+  /**
+   * Get database connection
+   * @return PDO Database connection object
+   */
+  public function getConnection()
   {
     $this->conn = null;
 
     try {
-      $this->conn = new mysqli($this->host, $this->user, $this->pass, $this->dbname);
-
-      if ($this->conn->connect_error) {
-        throw new Exception("Connection failed: " . $this->conn->connect_error);
-      }
-
-      // Set charset to utf8mb4
-      $this->conn->set_charset("utf8mb4");
-    } catch (Exception $e) {
-      die("Database Connection Error: " . $e->getMessage());
+      $this->conn = new PDO(
+        "mysql:host=" . $this->host . ";dbname=" . $this->db_name,
+        $this->username,
+        $this->password,
+        array(
+          PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+          PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+          PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4"
+        )
+      );
+    } catch (PDOException $e) {
+      echo "Connection Error: " . $e->getMessage();
+      exit;
     }
 
     return $this->conn;

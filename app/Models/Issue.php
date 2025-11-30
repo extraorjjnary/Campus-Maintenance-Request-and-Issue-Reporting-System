@@ -1,238 +1,219 @@
 <?php
-require_once __DIR__ . '/../../config/database.php';
+
+/**
+ * Issue Model - PDO Version
+ * Handles all database operations for issues
+ */
 
 class Issue
 {
   private $conn;
   private $table = 'issues';
 
-  public function __construct()
+  public function __construct($db)
   {
-    $database = new Database();
-    $this->conn = $database->connect();
+    $this->conn = $db;
   }
 
-  // Validate User ID format
-  public function validateUserId($userId, $userRole)
-  {
-    // Student ID format: YY-XXXX (e.g., 23-4302)
-    $studentPattern = '/^[0-9]{2}-[0-9]{4}$/';
-
-    // Staff/Instructor ID format: EMP-XXXX (e.g., EMP-2043)
-    $staffPattern = '/^EMP-[0-9]{4}$/';
-
-    if ($userRole === 'Student') {
-      return preg_match($studentPattern, $userId);
-    } else if ($userRole === 'Staff' || $userRole === 'Instructor') {
-      return preg_match($staffPattern, $userId);
-    }
-
-    return false;
-  }
-
-  // Get all issues
+  /**
+   * Get all issues for DataTables
+   * @return array All issues with formatted data
+   */
   public function getAll()
   {
-    $query = "SELECT * FROM " . $this->table . " ORDER BY created_at DESC";
-    $result = $this->conn->query($query);
+    $query = "SELECT 
+                    id,
+                    user_id,
+                    user_role,
+                    title,
+                    description,
+                    category,
+                    location,
+                    image,
+                    status,
+                    DATE_FORMAT(created_at, '%M %d, %Y') as created_date,
+                    created_at
+                  FROM " . $this->table . "
+                  ORDER BY created_at DESC";
 
-    if ($result) {
-      return $result->fetch_all(MYSQLI_ASSOC);
+    try {
+      $stmt = $this->conn->prepare($query);
+      $stmt->execute();
+      return $stmt->fetchAll();
+    } catch (PDOException $e) {
+      return [];
     }
-    return [];
   }
 
-  // Get single issue by ID
-  // Returns: Array with issue data or NULL if not found
+  /**
+   * Get single issue by ID
+   * @param int $id Issue ID
+   * @return array|null Issue data or null
+   */
   public function getById($id)
   {
-    $query = "SELECT * FROM " . $this->table . " WHERE id = ?";
-    $stmt = $this->conn->prepare($query);
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    $query = "SELECT * FROM " . $this->table . " WHERE id = :id LIMIT 1";
 
-    // fetch_assoc() returns NULL if no record found
-    return $result->fetch_assoc();
+    try {
+      $stmt = $this->conn->prepare($query);
+      $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+      $stmt->execute();
+      return $stmt->fetch();
+    } catch (PDOException $e) {
+      return null;
+    }
   }
 
-  // Create new issue
+  /**
+   * Create new issue
+   * @param array $data Issue data
+   * @return bool Success status
+   */
   public function create($data)
   {
-    // Validate User ID before inserting
-    if (!$this->validateUserId($data['user_id'], $data['user_role'])) {
+    $query = "INSERT INTO " . $this->table . "
+                  (user_id, user_role, title, description, category, location, image)
+                  VALUES (:user_id, :user_role, :title, :description, :category, :location, :image)";
+
+    try {
+      $stmt = $this->conn->prepare($query);
+
+      $stmt->bindParam(':user_id', $data['user_id']);
+      $stmt->bindParam(':user_role', $data['user_role']);
+      $stmt->bindParam(':title', $data['title']);
+      $stmt->bindParam(':description', $data['description']);
+      $stmt->bindParam(':category', $data['category']);
+      $stmt->bindParam(':location', $data['location']);
+      $stmt->bindParam(':image', $data['image']);
+
+      return $stmt->execute();
+    } catch (PDOException $e) {
       return false;
     }
-
-    $query = "INSERT INTO " . $this->table . " 
-                  (user_id, user_role, title, description, category, location, image) 
-                  VALUES (?, ?, ?, ?, ?, ?, ?)";
-
-    $stmt = $this->conn->prepare($query);
-    $stmt->bind_param(
-      "sssssss",
-      $data['user_id'],
-      $data['user_role'],
-      $data['title'],
-      $data['description'],
-      $data['category'],
-      $data['location'],
-      $data['image']
-    );
-
-    if ($stmt->execute()) {
-      return true;
-    }
-    return false;
   }
 
-  // Update issue
+  /**
+   * Update issue
+   * @param int $id Issue ID
+   * @param array $data Updated data
+   * @return bool Success status
+   */
   public function update($id, $data)
   {
-    // Validate User ID before updating
-    if (!$this->validateUserId($data['user_id'], $data['user_role'])) {
+    $query = "UPDATE " . $this->table . "
+                  SET user_id = :user_id,
+                      user_role = :user_role,
+                      title = :title,
+                      description = :description,
+                      category = :category,
+                      location = :location,
+                      image = :image
+                  WHERE id = :id";
+
+    try {
+      $stmt = $this->conn->prepare($query);
+
+      $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+      $stmt->bindParam(':user_id', $data['user_id']);
+      $stmt->bindParam(':user_role', $data['user_role']);
+      $stmt->bindParam(':title', $data['title']);
+      $stmt->bindParam(':description', $data['description']);
+      $stmt->bindParam(':category', $data['category']);
+      $stmt->bindParam(':location', $data['location']);
+      $stmt->bindParam(':image', $data['image']);
+
+      return $stmt->execute();
+    } catch (PDOException $e) {
       return false;
     }
-
-    $query = "UPDATE " . $this->table . " 
-                  SET user_id = ?, user_role = ?, title = ?, description = ?, 
-                      category = ?, location = ?, image = ? 
-                  WHERE id = ?";
-
-    $stmt = $this->conn->prepare($query);
-    $stmt->bind_param(
-      "sssssssi",
-      $data['user_id'],
-      $data['user_role'],
-      $data['title'],
-      $data['description'],
-      $data['category'],
-      $data['location'],
-      $data['image'],
-      $id
-    );
-
-    return $stmt->execute();
   }
 
-  // Update status only
+  /**
+   * Update issue status only
+   * @param int $id Issue ID
+   * @param string $status New status
+   * @return bool Success status
+   */
   public function updateStatus($id, $status)
   {
-    $query = "UPDATE " . $this->table . " SET status = ? WHERE id = ?";
-    $stmt = $this->conn->prepare($query);
-    $stmt->bind_param("si", $status, $id);
+    $query = "UPDATE " . $this->table . " SET status = :status WHERE id = :id";
 
-    return $stmt->execute();
+    try {
+      $stmt = $this->conn->prepare($query);
+      $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+      $stmt->bindParam(':status', $status);
+      return $stmt->execute();
+    } catch (PDOException $e) {
+      return false;
+    }
   }
 
-  // Delete issue
+  /**
+   * Delete issue
+   * @param int $id Issue ID
+   * @return bool Success status
+   */
   public function delete($id)
   {
-    // Get image first to delete file
+    // Get image filename before deleting
     $issue = $this->getById($id);
-    if ($issue && $issue['image']) {
-      $imagePath = __DIR__ . '/../../public/uploads/' . $issue['image'];
-      if (file_exists($imagePath)) {
-        unlink($imagePath);
+
+    $query = "DELETE FROM " . $this->table . " WHERE id = :id";
+
+    try {
+      $stmt = $this->conn->prepare($query);
+      $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+
+      if ($stmt->execute()) {
+        // Delete image file if exists
+        if ($issue && $issue['image']) {
+          $imagePath = __DIR__ . '/../../public/uploads/' . $issue['image'];
+          if (file_exists($imagePath)) {
+            unlink($imagePath);
+          }
+        }
+        return true;
       }
+      return false;
+    } catch (PDOException $e) {
+      return false;
     }
-
-    $query = "DELETE FROM " . $this->table . " WHERE id = ?";
-    $stmt = $this->conn->prepare($query);
-    $stmt->bind_param("i", $id);
-
-    return $stmt->execute();
   }
 
-  // Get issue count by status
+  /**
+   * Get issue count by status
+   * @param string $status Status to count
+   * @return int Count
+   */
   public function getCountByStatus($status)
   {
-    $query = "SELECT COUNT(*) as count FROM " . $this->table . " WHERE status = ?";
-    $stmt = $this->conn->prepare($query);
-    $stmt->bind_param("s", $status);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $row = $result->fetch_assoc();
+    $query = "SELECT COUNT(*) as count FROM " . $this->table . " WHERE status = :status";
 
-    return $row['count'];
+    try {
+      $stmt = $this->conn->prepare($query);
+      $stmt->bindParam(':status', $status);
+      $stmt->execute();
+      $result = $stmt->fetch();
+      return $result['count'];
+    } catch (PDOException $e) {
+      return 0;
+    }
   }
 
-  // Get issue count by category
-  public function getCountByCategory($category)
+  /**
+   * Validate User ID format
+   * @param string $userId User ID
+   * @param string $userRole User role
+   * @return bool Valid or not
+   */
+  public function validateUserId($userId, $userRole)
   {
-    $query = "SELECT COUNT(*) as count FROM " . $this->table . " WHERE category = ?";
-    $stmt = $this->conn->prepare($query);
-    $stmt->bind_param("s", $category);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $row = $result->fetch_assoc();
+    $patterns = [
+      'Student' => '/^[0-9]{2}-[0-9]{4}$/',
+      'Staff' => '/^EMP-[0-9]{4}$/',
+      'Instructor' => '/^EMP-[0-9]{4}$/'
+    ];
 
-    return $row['count'];
-  }
-
-  // Get issue count by user role
-  public function getCountByUserRole($role)
-  {
-    $query = "SELECT COUNT(*) as count FROM " . $this->table . " WHERE user_role = ?";
-    $stmt = $this->conn->prepare($query);
-    $stmt->bind_param("s", $role);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $row = $result->fetch_assoc();
-
-    return $row['count'];
-  }
-
-  // Search and filter issues
-  public function searchAndFilter($searchTerm = '', $status = '', $category = '', $userRole = '')
-  {
-    $query = "SELECT * FROM " . $this->table . " WHERE 1=1";
-    $params = [];
-    $types = '';
-
-    // Search by title, description, location, or user_id
-    if (!empty($searchTerm)) {
-      $query .= " AND (title LIKE ? OR description LIKE ? OR location LIKE ? OR user_id LIKE ?)";
-      $searchParam = '%' . $searchTerm . '%';
-      $params[] = $searchParam;
-      $params[] = $searchParam;
-      $params[] = $searchParam;
-      $params[] = $searchParam;
-      $types .= 'ssss';
-    }
-
-    // Filter by status
-    if (!empty($status)) {
-      $query .= " AND status = ?";
-      $params[] = $status;
-      $types .= 's';
-    }
-
-    // Filter by category
-    if (!empty($category)) {
-      $query .= " AND category = ?";
-      $params[] = $category;
-      $types .= 's';
-    }
-
-    // Filter by user role
-    if (!empty($userRole)) {
-      $query .= " AND user_role = ?";
-      $params[] = $userRole;
-      $types .= 's';
-    }
-
-    $query .= " ORDER BY created_at DESC";
-
-    $stmt = $this->conn->prepare($query);
-
-    if (!empty($params)) {
-      $stmt->bind_param($types, ...$params);
-    }
-
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    return $result->fetch_all(MYSQLI_ASSOC);
+    return isset($patterns[$userRole]) && preg_match($patterns[$userRole], $userId);
   }
 }

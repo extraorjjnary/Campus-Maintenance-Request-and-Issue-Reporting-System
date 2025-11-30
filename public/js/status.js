@@ -46,31 +46,3 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 });
-
-/**
- * Future enhancement: AJAX status update without page reload
- * This function can be used to update status via AJAX
- */
-function updateStatusAjax(issueId, newStatus) {
-  // Placeholder for AJAX implementation
-  console.log(`AJAX Update - Issue ${issueId} to ${newStatus}`);
-
-  // Example AJAX call (currently disabled)
-  /*
-    fetch('index.php?action=updateStatus', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `id=${issueId}&status=${newStatus}`
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Status updated successfully');
-        // Update UI without page reload
-    })
-    .catch(error => {
-        console.error('Error updating status:', error);
-    });
-    */
-}

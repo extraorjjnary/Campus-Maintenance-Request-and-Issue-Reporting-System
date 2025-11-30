@@ -1,68 +1,96 @@
 <?php
+
+/**
+ * Issue Controller - PDO Version with DataTables support
+ */
+
+require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../Models/Issue.php';
 
 class IssueController
 {
   private $issueModel;
+  private $db;
 
   public function __construct()
   {
-    $this->issueModel = new Issue();
+    $database = new Database();
+    $this->db = $database->getConnection();
+    $this->issueModel = new Issue($this->db);
   }
 
-  // Show all issues with dashboard
+  /**
+   * Show dashboard with DataTables
+   */
   public function index()
   {
-    $issues = $this->issueModel->getAll();
-
-    // Get counts for dashboard
     $pendingCount = $this->issueModel->getCountByStatus('Pending');
     $inProgressCount = $this->issueModel->getCountByStatus('In Progress');
     $completedCount = $this->issueModel->getCountByStatus('Completed');
 
-    // Get counts by user role
-    $studentCount = $this->issueModel->getCountByUserRole('Student');
-    $staffCount = $this->issueModel->getCountByUserRole('Staff');
-    $instructorCount = $this->issueModel->getCountByUserRole('Instructor');
-
     require_once __DIR__ . '/../Views/issues/index.php';
   }
 
-  // Show create form
+  /**
+   * JSON endpoint for DataTables AJAX
+   * Returns all issues in JSON format
+   */
+  public function getIssuesJson()
+  {
+    header('Content-Type: application/json');
+
+    $issues = $this->issueModel->getAll();
+
+    // Format data for DataTables
+    $data = array_map(function ($issue) {
+      return [
+        'id' => $issue['id'],
+        'user_id' => htmlspecialchars($issue['user_id']),
+        'user_role' => htmlspecialchars($issue['user_role']),
+        'title' => htmlspecialchars($issue['title']),
+        'category' => htmlspecialchars($issue['category']),
+        'location' => htmlspecialchars($issue['location']),
+        'status' => $issue['status'],
+        'created_date' => $issue['created_date'],
+        'created_at' => $issue['created_at'],
+        'image' => $issue['image'] ? true : false
+      ];
+    }, $issues);
+
+    echo json_encode(['data' => $data]);
+    exit;
+  }
+
+  /**
+   * Show create form
+   */
   public function create()
   {
     require_once __DIR__ . '/../Views/issues/create.php';
   }
 
-  // Store new issue
+  /**
+   * Store new issue
+   */
   public function store()
   {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+      header('Location: index.php');
+      exit;
+    }
+
     $errors = [];
 
-    // Validation
-    if (empty($_POST['user_id'])) {
-      $errors[] = "User ID is required";
-    }
-    if (empty($_POST['user_role'])) {
-      $errors[] = "User Role is required";
-    }
-    if (empty($_POST['title'])) {
-      $errors[] = "Title is required";
-    }
-    if (empty($_POST['description'])) {
-      $errors[] = "Description is required";
-    }
-    if (empty($_POST['category'])) {
-      $errors[] = "Category is required";
-    }
-    if (empty($_POST['location'])) {
-      $errors[] = "Location is required";
-    }
+    if (empty($_POST['user_id'])) $errors[] = "User ID is required";
+    if (empty($_POST['user_role'])) $errors[] = "User Role is required";
+    if (empty($_POST['title'])) $errors[] = "Title is required";
+    if (empty($_POST['description'])) $errors[] = "Description is required";
+    if (empty($_POST['category'])) $errors[] = "Category is required";
+    if (empty($_POST['location'])) $errors[] = "Location is required";
 
-    // Server-side User ID validation
     if (!empty($_POST['user_id']) && !empty($_POST['user_role'])) {
       if (!$this->issueModel->validateUserId($_POST['user_id'], $_POST['user_role'])) {
-        $errors[] = "Invalid User ID format for selected role";
+        $errors[] = "Invalid User ID format";
       }
     }
 
@@ -73,29 +101,8 @@ class IssueController
       exit;
     }
 
-    // Handle image upload
-    $imageName = null;
-    if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
-      $allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-      $maxSize = 5 * 1024 * 1024; // 5MB
+    $imageName = $this->handleImageUpload();
 
-      if (in_array($_FILES['image']['type'], $allowedTypes) && $_FILES['image']['size'] <= $maxSize) {
-        $extension = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-        $imageName = uniqid() . '_' . time() . '.' . $extension;
-        $uploadPath = __DIR__ . '/../../public/uploads/' . $imageName;
-
-        // Create uploads directory if it doesn't exist
-        if (!is_dir(__DIR__ . '/../../public/uploads/')) {
-          mkdir(__DIR__ . '/../../public/uploads/', 0755, true);
-        }
-
-        if (!move_uploaded_file($_FILES['image']['tmp_name'], $uploadPath)) {
-          $imageName = null;
-        }
-      }
-    }
-
-    // Prepare data
     $data = [
       'user_id' => htmlspecialchars(trim($_POST['user_id'])),
       'user_role' => htmlspecialchars($_POST['user_role']),
@@ -106,20 +113,21 @@ class IssueController
       'image' => $imageName
     ];
 
-    // Create issue
     if ($this->issueModel->create($data)) {
-      $_SESSION['success'] = "Issue reported successfully! Your report has been submitted.";
+      $_SESSION['success'] = "Issue reported successfully!";
       unset($_SESSION['old_data']);
       header('Location: index.php');
     } else {
-      $_SESSION['errors'] = ["Failed to create issue. Please check your User ID format."];
+      $_SESSION['errors'] = ["Failed to create issue"];
       $_SESSION['old_data'] = $_POST;
       header('Location: index.php?action=create');
     }
     exit;
   }
 
-  // Show single issue
+  /**
+   * Show single issue
+   */
   public function show()
   {
     $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
@@ -134,31 +142,33 @@ class IssueController
     require_once __DIR__ . '/../Views/issues/show.php';
   }
 
-  // Show edit form
-  // Loads existing issue data and displays edit form
+  /**
+   * Show edit form
+   */
   public function edit()
   {
-    // Get issue ID from URL parameter
     $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-
-    // Fetch issue data from database
     $issue = $this->issueModel->getById($id);
 
-    // If issue not found, redirect with error
     if (!$issue) {
       $_SESSION['errors'] = ["Issue not found"];
       header('Location: index.php');
       exit;
     }
 
-    // Load edit view and pass $issue data to it
-    // The view will automatically display existing values
     require_once __DIR__ . '/../Views/issues/edit.php';
   }
 
-  // Update issue
+  /**
+   * Update issue
+   */
   public function update()
   {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+      header('Location: index.php');
+      exit;
+    }
+
     $id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
     $issue = $this->issueModel->getById($id);
 
@@ -170,30 +180,16 @@ class IssueController
 
     $errors = [];
 
-    // Validation
-    if (empty($_POST['user_id'])) {
-      $errors[] = "User ID is required";
-    }
-    if (empty($_POST['user_role'])) {
-      $errors[] = "User Role is required";
-    }
-    if (empty($_POST['title'])) {
-      $errors[] = "Title is required";
-    }
-    if (empty($_POST['description'])) {
-      $errors[] = "Description is required";
-    }
-    if (empty($_POST['category'])) {
-      $errors[] = "Category is required";
-    }
-    if (empty($_POST['location'])) {
-      $errors[] = "Location is required";
-    }
+    if (empty($_POST['user_id'])) $errors[] = "User ID is required";
+    if (empty($_POST['user_role'])) $errors[] = "User Role is required";
+    if (empty($_POST['title'])) $errors[] = "Title is required";
+    if (empty($_POST['description'])) $errors[] = "Description is required";
+    if (empty($_POST['category'])) $errors[] = "Category is required";
+    if (empty($_POST['location'])) $errors[] = "Location is required";
 
-    // Server-side User ID validation
     if (!empty($_POST['user_id']) && !empty($_POST['user_role'])) {
       if (!$this->issueModel->validateUserId($_POST['user_id'], $_POST['user_role'])) {
-        $errors[] = "Invalid User ID format for selected role";
+        $errors[] = "Invalid User ID format";
       }
     }
 
@@ -203,32 +199,20 @@ class IssueController
       exit;
     }
 
-    // Handle new image upload
-    $imageName = $issue['image']; // Keep old image by default
+    $imageName = $issue['image'];
     if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
-      $allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-      $maxSize = 5 * 1024 * 1024; // 5MB
-
-      if (in_array($_FILES['image']['type'], $allowedTypes) && $_FILES['image']['size'] <= $maxSize) {
-        // Delete old image
+      $newImage = $this->handleImageUpload();
+      if ($newImage) {
         if ($issue['image']) {
           $oldImagePath = __DIR__ . '/../../public/uploads/' . $issue['image'];
           if (file_exists($oldImagePath)) {
             unlink($oldImagePath);
           }
         }
-
-        $extension = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-        $imageName = uniqid() . '_' . time() . '.' . $extension;
-        $uploadPath = __DIR__ . '/../../public/uploads/' . $imageName;
-
-        if (!move_uploaded_file($_FILES['image']['tmp_name'], $uploadPath)) {
-          $imageName = $issue['image']; // Revert to old image if upload fails
-        }
+        $imageName = $newImage;
       }
     }
 
-    // Prepare data
     $data = [
       'user_id' => htmlspecialchars(trim($_POST['user_id'])),
       'user_role' => htmlspecialchars($_POST['user_role']),
@@ -239,20 +223,26 @@ class IssueController
       'image' => $imageName
     ];
 
-    // Update issue
     if ($this->issueModel->update($id, $data)) {
       $_SESSION['success'] = "Issue updated successfully!";
       header('Location: index.php?action=show&id=' . $id);
     } else {
-      $_SESSION['errors'] = ["Failed to update issue. Please check your User ID format."];
+      $_SESSION['errors'] = ["Failed to update issue"];
       header('Location: index.php?action=edit&id=' . $id);
     }
     exit;
   }
 
-  // Update status
+  /**
+   * Update status only
+   */
   public function updateStatus()
   {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+      header('Location: index.php');
+      exit;
+    }
+
     $id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
     $status = isset($_POST['status']) ? $_POST['status'] : '';
 
@@ -264,23 +254,28 @@ class IssueController
     }
 
     if ($this->issueModel->updateStatus($id, $status)) {
-      $_SESSION['success'] = "Status updated successfully to " . $status;
+      $_SESSION['success'] = "Status updated to " . $status;
     } else {
       $_SESSION['errors'] = ["Failed to update status"];
     }
 
-    // Redirect back to the issue detail page
-    if (isset($_POST['redirect']) && $_POST['redirect'] === 'show') {
-      header('Location: index.php?action=show&id=' . $id);
-    } else {
-      header('Location: index.php');
-    }
+    $redirect = isset($_POST['redirect']) && $_POST['redirect'] === 'show'
+      ? 'index.php?action=show&id=' . $id
+      : 'index.php';
+    header('Location: ' . $redirect);
     exit;
   }
 
-  // Delete issue
+  /**
+   * Delete issue
+   */
   public function delete()
   {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+      header('Location: index.php');
+      exit;
+    }
+
     $id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
 
     if ($this->issueModel->delete($id)) {
@@ -293,19 +288,35 @@ class IssueController
     exit;
   }
 
-  // AJAX: Get filtered issues (for search/filter functionality)
-  public function filter()
+  /**
+   * Handle image upload
+   * @return string|null Image filename or null
+   */
+  private function handleImageUpload()
   {
-    header('Content-Type: application/json');
+    if (!isset($_FILES['image']) || $_FILES['image']['error'] !== 0) {
+      return null;
+    }
 
-    $searchTerm = isset($_GET['search']) ? $_GET['search'] : '';
-    $status = isset($_GET['status']) ? $_GET['status'] : '';
-    $category = isset($_GET['category']) ? $_GET['category'] : '';
-    $userRole = isset($_GET['user_role']) ? $_GET['user_role'] : '';
+    $allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+    $maxSize = 5 * 1024 * 1024;
 
-    $issues = $this->issueModel->searchAndFilter($searchTerm, $status, $category, $userRole);
+    if (!in_array($_FILES['image']['type'], $allowedTypes) || $_FILES['image']['size'] > $maxSize) {
+      return null;
+    }
 
-    echo json_encode($issues);
-    exit;
+    $extension = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
+    $imageName = uniqid() . '_' . time() . '.' . $extension;
+    $uploadPath = __DIR__ . '/../../public/uploads/' . $imageName;
+
+    if (!is_dir(__DIR__ . '/../../public/uploads/')) {
+      mkdir(__DIR__ . '/../../public/uploads/', 0755, true);
+    }
+
+    if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadPath)) {
+      return $imageName;
+    }
+
+    return null;
   }
 }
