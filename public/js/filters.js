@@ -54,8 +54,8 @@ document.addEventListener('DOMContentLoaded', function () {
         showRow = false;
       }
 
-      // Check status filter
-      if (statusValue && status !== statusValue) {
+      // Check status filter (skip if empty, means show all)
+      if (statusValue && statusValue !== '' && status !== statusValue) {
         showRow = false;
       }
 
@@ -106,7 +106,12 @@ document.addEventListener('DOMContentLoaded', function () {
    * Filter by status - called when stat cards are clicked
    */
   window.filterByStatus = function (status) {
-    statusFilter.value = status;
+    // Accept empty string '' to clear the status filter
+    if (status === '') {
+      statusFilter.value = '';
+    } else {
+      statusFilter.value = status;
+    }
     applyFilters();
     console.log(`Filtered by status: ${status}`);
 

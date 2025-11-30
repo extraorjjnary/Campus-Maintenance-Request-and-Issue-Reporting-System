@@ -125,7 +125,7 @@
         </div>
       </div>
       <div class="col-md-3">
-        <div class="card text-white bg-dark stat-card">
+        <div class="card text-white bg-dark stat-card" onclick="filterByStatus('')">
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-center">
               <div>
