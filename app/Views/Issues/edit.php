@@ -79,6 +79,19 @@
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
+  <script>
+    // Auto-dismiss success/error alerts after 5 seconds
+    document.addEventListener('DOMContentLoaded', function() {
+      const alerts = document.querySelectorAll('.alert-success, .alert-danger');
+      alerts.forEach(function(alert) {
+        setTimeout(function() {
+          const bsAlert = new bootstrap.Alert(alert);
+          bsAlert.close();
+        }, 5000); // 5 seconds delay
+      });
+    });
+  </script>
+
   <!-- Custom JavaScript Files -->
   <script src="js/validation.js"></script>
   <script src="js/preview.js"></script>

@@ -18,23 +18,17 @@ $issue = $issue ?? [];
 /**
  * Helper function: Get old input or existing value
  * Priority: 1) Session old_data (validation errors), 2) Existing issue data (edit), 3) Default value
- * 
- * @param string $field - Field name (e.g., 'title', 'user_id')
- * @param mixed $default - Default value if nothing found
- * @return mixed - The value to display in the form
  */
-function old($field, $default = '')
+function old($field, $issueData = [], $default = '')
 {
-  global $issue;
-
   // Priority 1: Check for old data from validation errors (most recent user input)
   if (isset($_SESSION['old_data'][$field])) {
     return $_SESSION['old_data'][$field];
   }
 
-  // Priority 2: Check for existing issue data (edit mode)
-  if (isset($issue[$field])) {
-    return $issue[$field];
+  // Priority 2: Check for existing issue data (edit mode) - now passed as param
+  if (isset($issueData[$field])) {
+    return $issueData[$field];
   }
 
   // Priority 3: Return default value
@@ -58,18 +52,25 @@ function old($field, $default = '')
     <!-- User Role -->
     <div class="col-md-6 mb-3">
       <label for="user_role" class="form-label required">User Role</label>
-      <select class="form-select" id="user_role" name="user_role" required>
+      <select class="form-select" id="user_role" name="user_role" <?php echo $isEdit ? 'disabled' : ''; ?> required>
         <option value="">Select Your Role</option>
-        <option value="Student" <?php echo old('user_role') == 'Student' ? 'selected' : ''; ?>>
+        <option value="Student" <?php echo old('user_role', $issue) == 'Student' ? 'selected' : ''; ?>>
           Student
         </option>
-        <option value="Staff" <?php echo old('user_role') == 'Staff' ? 'selected' : ''; ?>>
+        <option value="Staff" <?php echo old('user_role', $issue) == 'Staff' ? 'selected' : ''; ?>>
           Staff
         </option>
-        <option value="Instructor" <?php echo old('user_role') == 'Instructor' ? 'selected' : ''; ?>>
+        <option value="Instructor" <?php echo old('user_role', $issue) == 'Instructor' ? 'selected' : ''; ?>>
           Instructor
         </option>
       </select>
+      <?php if ($isEdit): ?>
+        <input type="hidden" name="user_role" value="<?php echo htmlspecialchars(old('user_role', $issue)); ?>">
+      <?php endif; ?>
+      <div id="userIdHelp" class="id-format-help text-muted">
+        <i class="bi bi-info-circle"></i> Please select your role first
+      </div>
+      <div id="userIdError" class="invalid-feedback" style="display: none;"></div>
     </div>
 
     <!-- User ID -->
@@ -80,8 +81,11 @@ function old($field, $default = '')
         id="user_id"
         name="user_id"
         placeholder="Enter your ID"
-        value="<?php echo htmlspecialchars(old('user_id')); ?>"
-        required>
+        value="<?php echo htmlspecialchars(old('user_id', $issue)); ?>"
+        <?php echo $isEdit ? 'readonly' : ''; ?> required>
+      <?php if ($isEdit): ?>
+        <input type="hidden" name="user_id" value="<?php echo htmlspecialchars(old('user_id', $issue)); ?>">
+      <?php endif; ?>
       <div id="userIdHelp" class="id-format-help text-muted">
         <i class="bi bi-info-circle"></i> Please select your role first
       </div>
@@ -102,7 +106,7 @@ function old($field, $default = '')
       id="title"
       name="title"
       placeholder="Brief description of the issue (e.g., Broken Window in Classroom)"
-      value="<?php echo htmlspecialchars(old('title')); ?>"
+      value="<?php echo htmlspecialchars(old('title', $issue)); ?>"
       required>
   </div>
 
@@ -114,7 +118,7 @@ function old($field, $default = '')
       name="description"
       rows="4"
       placeholder="Provide detailed information about the issue, including when you noticed it and any safety concerns"
-      required><?php echo htmlspecialchars(old('description')); ?></textarea>
+      required><?php echo htmlspecialchars(old('description', $issue)); ?></textarea>
     <small class="text-muted">Be as specific as possible to help maintenance team address the issue</small>
   </div>
 
@@ -124,28 +128,28 @@ function old($field, $default = '')
       <label for="category" class="form-label required">Category</label>
       <select class="form-select" id="category" name="category" required>
         <option value="">Select Category</option>
-        <option value="Plumbing" <?php echo old('category') == 'Plumbing' ? 'selected' : ''; ?>>
+        <option value="Plumbing" <?php echo old('category', $issue) == 'Plumbing' ? 'selected' : ''; ?>>
           Plumbing
         </option>
-        <option value="Electrical" <?php echo old('category') == 'Electrical' ? 'selected' : ''; ?>>
+        <option value="Electrical" <?php echo old('category', $issue) == 'Electrical' ? 'selected' : ''; ?>>
           Electrical
         </option>
-        <option value="Infrastructure" <?php echo old('category') == 'Infrastructure' ? 'selected' : ''; ?>>
+        <option value="Infrastructure" <?php echo old('category', $issue) == 'Infrastructure' ? 'selected' : ''; ?>>
           Infrastructure
         </option>
-        <option value="HVAC" <?php echo old('category') == 'HVAC' ? 'selected' : ''; ?>>
+        <option value="HVAC" <?php echo old('category', $issue) == 'HVAC' ? 'selected' : ''; ?>>
           HVAC (Heating/Cooling)
         </option>
-        <option value="Equipment" <?php echo old('category') == 'Equipment' ? 'selected' : ''; ?>>
+        <option value="Equipment" <?php echo old('category', $issue) == 'Equipment' ? 'selected' : ''; ?>>
           Equipment
         </option>
-        <option value="Furniture" <?php echo old('category') == 'Furniture' ? 'selected' : ''; ?>>
+        <option value="Furniture" <?php echo old('category', $issue) == 'Furniture' ? 'selected' : ''; ?>>
           Furniture
         </option>
-        <option value="Landscaping" <?php echo old('category') == 'Landscaping' ? 'selected' : ''; ?>>
+        <option value="Landscaping" <?php echo old('category', $issue) == 'Landscaping' ? 'selected' : ''; ?>>
           Landscaping
         </option>
-        <option value="Other" <?php echo old('category') == 'Other' ? 'selected' : ''; ?>>
+        <option value="Other" <?php echo old('category', $issue) == 'Other' ? 'selected' : ''; ?>>
           Other
         </option>
       </select>
@@ -159,7 +163,7 @@ function old($field, $default = '')
         id="location"
         name="location"
         placeholder="e.g., Building A - Room 301"
-        value="<?php echo htmlspecialchars(old('location')); ?>"
+        value="<?php echo htmlspecialchars(old('location', $issue)); ?>"
         required>
       <small class="text-muted">Specify building, floor, and room number</small>
     </div>
@@ -175,6 +179,7 @@ function old($field, $default = '')
           class="img-thumbnail"
           style="max-width: 400px;">
       </div>
+      <input type="hidden" name="existing_image" value="<?php echo htmlspecialchars($issue['image']); ?>">
       <small class="form-text text-muted">
         <i class="bi bi-info-circle"></i> Upload a new image to replace this one
       </small>
@@ -248,3 +253,10 @@ function old($field, $default = '')
     color: red;
   }
 </style>
+
+<?php
+// Clear old data after display
+if (isset($_SESSION['old_data'])) {
+  unset($_SESSION['old_data']);
+}
+?>

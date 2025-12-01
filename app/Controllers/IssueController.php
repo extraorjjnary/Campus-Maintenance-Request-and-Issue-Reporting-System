@@ -162,6 +162,9 @@ class IssueController
   /**
    * Update issue
    */
+  /**
+   * Update issue
+   */
   public function update()
   {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -194,6 +197,7 @@ class IssueController
     }
 
     if (!empty($errors)) {
+      $_SESSION['old_data'] = $_POST;  // Added: Repopulate with submitted values on error
       $_SESSION['errors'] = $errors;
       header('Location: index.php?action=edit&id=' . $id);
       exit;

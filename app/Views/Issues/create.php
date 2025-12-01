@@ -179,18 +179,29 @@
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
+  <!-- NEW: Auto-dismiss script (moved before custom JS for timing) -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const alerts = document.querySelectorAll('.alert-success, .alert-danger');
+      alerts.forEach(function(alert) {
+        setTimeout(function() {
+          const bsAlert = new bootstrap.Alert(alert);
+          bsAlert.close();
+        }, 5000); // 5 seconds delay
+      });
+    });
+  </script>
+
   <!-- Custom JavaScript Files -->
   <script src="js/validation.js"></script>
   <script src="js/preview.js"></script>
 
-  <script>
-    <?php
-    // Clear old data after displaying
-    if (isset($_SESSION['old_data'])) {
-      unset($_SESSION['old_data']);
-    }
-    ?>
-  </script>
+  <?php
+  // Clear old data after displaying (moved out of JS block)
+  if (isset($_SESSION['old_data'])) {
+    unset($_SESSION['old_data']);
+  }
+  ?>
 </body>
 
 </html>

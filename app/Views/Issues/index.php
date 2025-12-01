@@ -211,6 +211,19 @@
   <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
   <script>
+    // Auto-dismiss success/error alerts after 5 seconds
+    document.addEventListener('DOMContentLoaded', function() {
+      const alerts = document.querySelectorAll('.alert-success, .alert-danger');
+      alerts.forEach(function(alert) {
+        setTimeout(function() {
+          const bsAlert = new bootstrap.Alert(alert);
+          bsAlert.close();
+        }, 5000); // 5 seconds delay
+      });
+    });
+  </script>
+
+  <script>
     $(document).ready(function() {
 
       const table = $('#issuesTable').DataTable({

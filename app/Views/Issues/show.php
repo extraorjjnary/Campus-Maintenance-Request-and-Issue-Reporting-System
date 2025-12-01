@@ -52,6 +52,17 @@
       </div>
     <?php endif; ?>
 
+    <?php if (isset($_SESSION['errors'])): ?>
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle"></i>
+        <?php
+        echo implode('<br>', $_SESSION['errors']);
+        unset($_SESSION['errors']);
+        ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    <?php endif; ?>
+
     <div class="row">
       <div class="col-md-8">
         <div class="card shadow-sm mb-4">
@@ -293,6 +304,19 @@
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- NEW: Auto-dismiss script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const alerts = document.querySelectorAll('.alert-success, .alert-danger');
+      alerts.forEach(function(alert) {
+        setTimeout(function() {
+          const bsAlert = new bootstrap.Alert(alert);
+          bsAlert.close();
+        }, 5000); // 5 seconds delay
+      });
+    });
+  </script>
 
   <!-- Custom JavaScript Files -->
   <script src="js/status.js"></script>
