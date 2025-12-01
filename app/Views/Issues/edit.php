@@ -7,21 +7,6 @@
   <title>Edit Issue #<?php echo $issue['id']; ?> - Campus Maintenance</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-  <style>
-    .id-format-help {
-      font-size: 0.875rem;
-      margin-top: 5px;
-    }
-
-    .invalid-feedback {
-      display: block;
-    }
-
-    .form-label.required::after {
-      content: " *";
-      color: red;
-    }
-  </style>
 </head>
 
 <body>
@@ -79,22 +64,11 @@
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-  <script>
-    // Auto-dismiss success/error alerts after 5 seconds
-    document.addEventListener('DOMContentLoaded', function() {
-      const alerts = document.querySelectorAll('.alert-success, .alert-danger');
-      alerts.forEach(function(alert) {
-        setTimeout(function() {
-          const bsAlert = new bootstrap.Alert(alert);
-          bsAlert.close();
-        }, 5000); // 5 seconds delay
-      });
-    });
-  </script>
-
   <!-- Custom JavaScript Files -->
   <script src="js/validation.js"></script>
   <script src="js/preview.js"></script>
+  <script src="js/alerts.js"></script>
+
 </body>
 
 </html>

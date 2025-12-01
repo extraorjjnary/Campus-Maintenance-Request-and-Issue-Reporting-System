@@ -7,21 +7,6 @@
   <title>Report New Issue - Campus Maintenance</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-  <style>
-    .id-format-help {
-      font-size: 0.875rem;
-      margin-top: 5px;
-    }
-
-    .invalid-feedback {
-      display: block;
-    }
-
-    .form-label.required::after {
-      content: " *";
-      color: red;
-    }
-  </style>
 </head>
 
 <body>
@@ -67,7 +52,7 @@
 
               <div class="row">
                 <div class="col-md-6 mb-3">
-                  <label for="user_role" class="form-label required">User Role</label>
+                  <label for="user_role" class="form-label">User Role <span class="text-danger">*</span></label>
                   <select class="form-select" id="user_role" name="user_role" required>
                     <option value="">Select Your Role</option>
                     <option value="Student" <?php echo (isset($_SESSION['old_data']['user_role']) && $_SESSION['old_data']['user_role'] == 'Student') ? 'selected' : ''; ?>>Student</option>
@@ -77,15 +62,15 @@
                 </div>
 
                 <div class="col-md-6 mb-3">
-                  <label for="user_id" class="form-label required">User ID</label>
+                  <label for="user_id" class="form-label">User ID <span class="text-danger">*</span></label>
                   <input type="text" class="form-control" id="user_id" name="user_id"
                     placeholder="Enter your ID"
                     value="<?php echo isset($_SESSION['old_data']['user_id']) ? htmlspecialchars($_SESSION['old_data']['user_id']) : ''; ?>"
                     required>
-                  <div id="userIdHelp" class="id-format-help text-muted">
+                  <small id="userIdHelp" class="text-muted mt-1">
                     <i class="bi bi-info-circle"></i> Please select your role first
-                  </div>
-                  <div id="userIdError" class="invalid-feedback" style="display: none;"></div>
+                  </small>
+                  <div id="userIdError" class="invalid-feedback d-block"></div>
                 </div>
               </div>
 
@@ -93,7 +78,7 @@
               <h5 class="border-bottom pb-2 mb-3 mt-4"><i class="bi bi-clipboard-data"></i> Issue Details</h5>
 
               <div class="mb-3">
-                <label for="title" class="form-label required">Issue Title</label>
+                <label for="title" class="form-label">Issue Title <span class="text-danger">*</span></label>
                 <input type="text" class="form-control" id="title" name="title"
                   placeholder="Brief description of the issue (e.g., Broken Window in Classroom)"
                   value="<?php echo isset($_SESSION['old_data']['title']) ? htmlspecialchars($_SESSION['old_data']['title']) : ''; ?>"
@@ -101,7 +86,7 @@
               </div>
 
               <div class="mb-3">
-                <label for="description" class="form-label required">Detailed Description</label>
+                <label for="description" class="form-label">Detailed Description <span class="text-danger">*</span></label>
                 <textarea class="form-control" id="description" name="description"
                   rows="4"
                   placeholder="Provide detailed information about the issue, including when you noticed it and any safety concerns"
@@ -111,7 +96,7 @@
 
               <div class="row">
                 <div class="col-md-6 mb-3">
-                  <label for="category" class="form-label required">Category</label>
+                  <label for="category" class="form-label">Category <span class="text-danger">*</span></label>
                   <select class="form-select" id="category" name="category" required>
                     <option value="">Select Category</option>
                     <option value="Plumbing" <?php echo (isset($_SESSION['old_data']['category']) && $_SESSION['old_data']['category'] == 'Plumbing') ? 'selected' : ''; ?>>Plumbing</option>
@@ -179,22 +164,12 @@
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-  <!-- NEW: Auto-dismiss script (moved before custom JS for timing) -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const alerts = document.querySelectorAll('.alert-success, .alert-danger');
-      alerts.forEach(function(alert) {
-        setTimeout(function() {
-          const bsAlert = new bootstrap.Alert(alert);
-          bsAlert.close();
-        }, 5000); // 5 seconds delay
-      });
-    });
-  </script>
+
 
   <!-- Custom JavaScript Files -->
   <script src="js/validation.js"></script>
   <script src="js/preview.js"></script>
+  <script src="js/alerts.js"></script>
 
   <?php
   // Clear old data after displaying (moved out of JS block)

@@ -7,23 +7,6 @@
   <title>View Issue #<?php echo $issue['id']; ?> - Campus Maintenance</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-  <style>
-    .info-label {
-      font-weight: 600;
-      color: #6c757d;
-      margin-bottom: 5px;
-    }
-
-    .info-value {
-      font-size: 1.1rem;
-      margin-bottom: 20px;
-    }
-
-    .status-update-card {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-    }
-  </style>
 </head>
 
 <body>
@@ -93,18 +76,18 @@
             <!-- Reporter Information -->
             <div class="row mb-4">
               <div class="col-md-6">
-                <div class="info-label">
+                <div class="fw-semibold text-secondary mb-1">
                   <i class="bi bi-person-badge"></i> Reported By (User ID)
                 </div>
-                <div class="info-value">
-                  <code class="fs-5"><?php echo htmlspecialchars($issue['user_id']); ?></code>
+                <div class="fs-5 mb-4">
+                  <code><?php echo htmlspecialchars($issue['user_id']); ?></code>
                 </div>
               </div>
               <div class="col-md-6">
-                <div class="info-label">
+                <div class="fw-semibold text-secondary mb-1">
                   <i class="bi bi-person"></i> User Role
                 </div>
-                <div class="info-value">
+                <div class="fs-5 mb-4">
                   <span class="badge bg-secondary fs-6">
                     <?php echo htmlspecialchars($issue['user_role']); ?>
                   </span>
@@ -114,10 +97,10 @@
 
             <!-- Description -->
             <div class="mb-4">
-              <div class="info-label">
+              <div class="fw-semibold text-secondary mb-1">
                 <i class="bi bi-card-text"></i> Description
               </div>
-              <div class="info-value">
+              <div class="fs-5 mb-4">
                 <?php echo nl2br(htmlspecialchars($issue['description'])); ?>
               </div>
             </div>
@@ -125,20 +108,20 @@
             <!-- Issue Details -->
             <div class="row mb-4">
               <div class="col-md-6">
-                <div class="info-label">
+                <div class="fw-semibold text-secondary mb-1">
                   <i class="bi bi-tag"></i> Category
                 </div>
-                <div class="info-value">
+                <div class="fs-5 mb-4">
                   <span class="badge bg-secondary fs-6">
                     <?php echo htmlspecialchars($issue['category']); ?>
                   </span>
                 </div>
               </div>
               <div class="col-md-6">
-                <div class="info-label">
+                <div class="fw-semibold text-secondary mb-1">
                   <i class="bi bi-geo-alt"></i> Location
                 </div>
-                <div class="info-value">
+                <div class="fs-5 mb-4">
                   <?php echo htmlspecialchars($issue['location']); ?>
                 </div>
               </div>
@@ -147,19 +130,19 @@
             <!-- Timestamps -->
             <div class="row">
               <div class="col-md-6">
-                <div class="info-label">
+                <div class="fw-semibold text-secondary mb-1">
                   <i class="bi bi-calendar-plus"></i> Created At
                 </div>
-                <div class="info-value">
+                <div class="fs-5 mb-4">
                   <?php echo date('F d, Y', strtotime($issue['created_at'])); ?><br>
                   <small class="text-muted"><?php echo date('h:i A', strtotime($issue['created_at'])); ?></small>
                 </div>
               </div>
               <div class="col-md-6">
-                <div class="info-label">
+                <div class="fw-semibold text-secondary mb-1">
                   <i class="bi bi-calendar-check"></i> Last Updated
                 </div>
-                <div class="info-value">
+                <div class="fs-5 mb-4">
                   <?php echo date('F d, Y', strtotime($issue['updated_at'])); ?><br>
                   <small class="text-muted"><?php echo date('h:i A', strtotime($issue['updated_at'])); ?></small>
                 </div>
@@ -215,7 +198,7 @@
         <?php endif; ?>
 
         <!-- Update Status Card -->
-        <div class="card shadow-sm status-update-card">
+        <div class="card shadow-sm bg-gradient-primary text-white">
           <div class="card-body">
             <h5 class="card-title">
               <i class="bi bi-gear-fill"></i> Update Status
@@ -306,21 +289,14 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
   <!-- NEW: Auto-dismiss script -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const alerts = document.querySelectorAll('.alert-success, .alert-danger');
-      alerts.forEach(function(alert) {
-        setTimeout(function() {
-          const bsAlert = new bootstrap.Alert(alert);
-          bsAlert.close();
-        }, 5000); // 5 seconds delay
-      });
-    });
-  </script>
+
 
   <!-- Custom JavaScript Files -->
   <script src="js/status.js"></script>
   <script src="js/feedbacks.js"></script>
+  <script src="js/alerts.js"></script>
+
+
 </body>
 
 </html>

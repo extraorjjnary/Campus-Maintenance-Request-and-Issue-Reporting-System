@@ -14,18 +14,14 @@
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
 
   <style>
+    /* Minimal custom for stat card hover (visual only, no click) */
     .stat-card {
       transition: transform 0.2s;
-      cursor: pointer;
+      cursor: default;
     }
 
     .stat-card:hover {
       transform: translateY(-5px);
-    }
-
-    .badge-status {
-      padding: 6px 12px;
-      font-size: 0.875rem;
     }
   </style>
 </head>
@@ -69,47 +65,43 @@
     <!-- Dashboard Statistics -->
     <div class="row mb-4">
       <div class="col-md-3">
-        <div class="card text-white bg-warning stat-card" onclick="filterByStatus('Pending')">
+        <div class="card text-white bg-warning stat-card">
           <div class="card-body">
             <h6><i class="bi bi-clock-history"></i> Pending</h6>
-            <h2><?php echo $pendingCount; ?></h2>
-            <small>Click to filter</small>
+            <h2 id="pendingCount"><?php echo $pendingCount; ?></h2>
           </div>
         </div>
       </div>
 
       <div class="col-md-3">
-        <div class="card text-white bg-info stat-card" onclick="filterByStatus('In Progress')">
+        <div class="card text-white bg-info stat-card">
           <div class="card-body">
             <h6><i class="bi bi-gear-fill"></i> In Progress</h6>
-            <h2><?php echo $inProgressCount; ?></h2>
-            <small>Click to filter</small>
+            <h2 id="inProgressCount"><?php echo $inProgressCount; ?></h2>
           </div>
         </div>
       </div>
 
       <div class="col-md-3">
-        <div class="card text-white bg-success stat-card" onclick="filterByStatus('Completed')">
+        <div class="card text-white bg-success stat-card">
           <div class="card-body">
             <h6><i class="bi bi-check-circle-fill"></i> Completed</h6>
-            <h2><?php echo $completedCount; ?></h2>
-            <small>Click to filter</small>
+            <h2 id="completedCount"><?php echo $completedCount; ?></h2>
           </div>
         </div>
       </div>
 
       <div class="col-md-3">
-        <div class="card text-white bg-dark stat-card" onclick="filterByStatus('')">
+        <div class="card text-white bg-dark stat-card">
           <div class="card-body">
             <h6><i class="bi bi-list-ul"></i> Total Issues</h6>
             <h2 id="totalCount">-</h2>
-            <small>Click to show all</small>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Custom Filter Row -->
+    <!-- Custom Filter Row (Added Status Dropdown) -->
     <div class="row mb-3">
       <div class="col-md-3">
         <label class="form-label">Filter by Category:</label>
@@ -133,6 +125,16 @@
           <option value="Student">Student</option>
           <option value="Staff">Staff</option>
           <option value="Instructor">Instructor</option>
+        </select>
+      </div>
+
+      <div class="col-md-3">
+        <label class="form-label">Filter by Status:</label>
+        <select id="statusFilter" class="form-select">
+          <option value="">All Statuses</option>
+          <option value="Pending">Pending</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Completed">Completed</option>
         </select>
       </div>
 
@@ -210,185 +212,9 @@
   <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
-  <script>
-    // Auto-dismiss success/error alerts after 5 seconds
-    document.addEventListener('DOMContentLoaded', function() {
-      const alerts = document.querySelectorAll('.alert-success, .alert-danger');
-      alerts.forEach(function(alert) {
-        setTimeout(function() {
-          const bsAlert = new bootstrap.Alert(alert);
-          bsAlert.close();
-        }, 5000); // 5 seconds delay
-      });
-    });
-  </script>
-
-  <script>
-    $(document).ready(function() {
-
-      const table = $('#issuesTable').DataTable({
-        ajax: {
-          url: 'index.php?action=getIssuesJson',
-          dataSrc: 'data'
-        },
-        columns: [{
-            data: 'id',
-            render: d => `<strong>#${d}</strong>`
-          },
-          {
-            data: 'user_id',
-            render: d => `<code>${d}</code>`
-          },
-          {
-            data: 'user_role',
-            render: d => `<span class="badge bg-secondary">${d}</span>`
-          },
-          {
-            data: 'title',
-            render: (d, t, r) => `<strong>${r.image ? '<i class="bi bi-image text-primary"></i> ' : ''}${d}</strong>`
-          },
-          {
-            data: 'category',
-            render: d => `<span class="badge bg-secondary">${d}</span>`
-          },
-          {
-            data: 'location'
-          },
-          {
-            data: 'status',
-            render: d => {
-              const cls = {
-                'Pending': 'bg-warning text-dark',
-                'In Progress': 'bg-info',
-                'Completed': 'bg-success'
-              };
-              return `<span class="badge ${cls[d]} badge-status">${d}</span>`;
-            }
-          },
-          {
-            data: 'created_date'
-          },
-          {
-            data: null,
-            orderable: false,
-            render: (d, t, r) => `
-              <div class="btn-group btn-group-sm">
-                <a href="index.php?action=show&id=${r.id}" class="btn btn-info"><i class="bi bi-eye"></i></a>
-                <a href="index.php?action=edit&id=${r.id}" class="btn btn-warning"><i class="bi bi-pencil"></i></a>
-                <button class="btn btn-danger delete-btn" data-id="${r.id}" data-title="${r.title}">
-                  <i class="bi bi-trash"></i>
-                </button>
-              </div>
-            `
-          }
-        ],
-        order: [
-          [0, 'desc']
-        ],
-        pageLength: 10,
-        drawCallback: function() {
-          const info = this.api().page.info();
-          $('#totalCount').text(info.recordsTotal);
-        }
-      });
-
-      // Hidden status filter
-      $('body').append('<input type="hidden" id="statusFilterHidden" value="">');
-
-      // CLEAN HTML BADGE TEXT → raw string
-      function extractText(html) {
-        return $('<div>').html(html).text().trim();
-      }
-
-      // Update current filter display
-      function updateCurrentFilter() {
-        const status = $('#statusFilterHidden').val();
-        const cat = $('#categoryFilter').val();
-        const role = $('#roleFilter').val();
-        const filters = [];
-        if (status) filters.push(status);
-        if (cat) filters.push(cat);
-        if (role) filters.push(role);
-        let text;
-        if (filters.length === 0) {
-          text = 'All Issues';
-        } else if (filters.length === 1) {
-          const f = filters[0];
-          if (f === status) {
-            text = f;
-          } else if (f === cat) {
-            text = `Category: ${f}`;
-          } else {
-            text = `Role: ${f}`;
-          }
-        } else {
-          text = 'Multiple Filters';
-        }
-        $('#currentFilter').text(text);
-      }
-
-      // FIXED FILTER LOGIC
-      $.fn.dataTable.ext.search.push(function(settings, data) {
-
-        const statusFilter = $('#statusFilterHidden').val();
-        const categoryFilter = $('#categoryFilter').val();
-        const roleFilter = $('#roleFilter').val();
-
-        const rowRole = extractText(data[2]);
-        const rowCategory = extractText(data[4]);
-        const rowStatus = extractText(data[6]);
-
-        if (statusFilter && rowStatus !== statusFilter) return false;
-        if (categoryFilter && rowCategory !== categoryFilter) return false;
-        if (roleFilter && rowRole !== roleFilter) return false;
-
-        return true;
-      });
-
-      // Status card filter
-      window.filterByStatus = function(status) {
-        // Clear other filters when applying status filter for consistency
-        $('#categoryFilter').val('');
-        $('#roleFilter').val('');
-        $('#statusFilterHidden').val(status);
-        table.draw();
-        updateCurrentFilter();
-        $('#clearFilters').toggle(status !== '');
-      };
-
-      // Dropdown filters
-      $('#categoryFilter, #roleFilter').on('change', function() {
-        table.draw();
-        updateCurrentFilter();
-        const isFiltering =
-          $('#categoryFilter').val() ||
-          $('#roleFilter').val() ||
-          $('#statusFilterHidden').val();
-        $('#clearFilters').toggle(!!isFiltering);
-      });
-
-      // Clear filters
-      $('#clearFilters').on('click', function() {
-        $('#statusFilterHidden').val('');
-        $('#categoryFilter').val('');
-        $('#roleFilter').val('');
-        updateCurrentFilter();
-        table.draw();
-        $(this).hide();
-      });
-
-      // Delete modal
-      $(document).on('click', '.delete-btn', function() {
-        $('#deleteIssueId').val($(this).data('id'));
-        $('#deleteIssueName').text($(this).data('title'));
-        new bootstrap.Modal(document.getElementById('deleteModal')).show();
-      });
-
-      // Initial update
-      updateCurrentFilter();
-
-    });
-  </script>
+  <!-- Custom JavaScript Files -->
+  <script src="js/alerts.js"></script>
+  <script src="js/dashboard.js"></script>
 
 </body>
 

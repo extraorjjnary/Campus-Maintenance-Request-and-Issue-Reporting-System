@@ -51,8 +51,8 @@ function old($field, $issueData = [], $default = '')
   <div class="row">
     <!-- User Role -->
     <div class="col-md-6 mb-3">
-      <label for="user_role" class="form-label required">User Role</label>
-      <select class="form-select" id="user_role" name="user_role" <?php echo $isEdit ? 'disabled' : ''; ?> required>
+      <label for="user_role" class="form-label <?php echo !$isEdit ? 'required' : ''; ?>">User Role</label>
+      <select class="form-select" id="user_role" name="user_role" <?php echo $isEdit ? 'disabled' : ''; ?> <?php echo $isEdit ? '' : 'required'; ?>>
         <option value="">Select Your Role</option>
         <option value="Student" <?php echo old('user_role', $issue) == 'Student' ? 'selected' : ''; ?>>
           Student
@@ -67,28 +67,32 @@ function old($field, $issueData = [], $default = '')
       <?php if ($isEdit): ?>
         <input type="hidden" name="user_role" value="<?php echo htmlspecialchars(old('user_role', $issue)); ?>">
       <?php endif; ?>
-      <div id="userIdHelp" class="id-format-help text-muted">
-        <i class="bi bi-info-circle"></i> Please select your role first
-      </div>
+      <?php if (!$isEdit): ?>
+        <div id="userIdHelp" class="id-format-help text-muted">
+          <i class="bi bi-info-circle"></i> Please select your role first
+        </div>
+      <?php endif; ?>
       <div id="userIdError" class="invalid-feedback" style="display: none;"></div>
     </div>
 
     <!-- User ID -->
     <div class="col-md-6 mb-3">
-      <label for="user_id" class="form-label required">User ID</label>
+      <label for="user_id" class="form-label <?php echo !$isEdit ? 'required' : ''; ?>">User ID</label>
       <input type="text"
         class="form-control"
         id="user_id"
         name="user_id"
         placeholder="Enter your ID"
         value="<?php echo htmlspecialchars(old('user_id', $issue)); ?>"
-        <?php echo $isEdit ? 'readonly' : ''; ?> required>
+        <?php echo $isEdit ? 'readonly' : ''; ?> <?php echo $isEdit ? '' : 'required'; ?>>
       <?php if ($isEdit): ?>
         <input type="hidden" name="user_id" value="<?php echo htmlspecialchars(old('user_id', $issue)); ?>">
       <?php endif; ?>
-      <div id="userIdHelp" class="id-format-help text-muted">
-        <i class="bi bi-info-circle"></i> Please select your role first
-      </div>
+      <?php if (!$isEdit): ?>
+        <div id="userIdHelp" class="id-format-help text-muted">
+          <i class="bi bi-info-circle"></i> Please select your role first
+        </div>
+      <?php endif; ?>
       <div id="userIdError" class="invalid-feedback" style="display: none;"></div>
     </div>
   </div>
