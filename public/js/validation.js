@@ -4,8 +4,6 @@
  * Provides real-time validation feedback to users
  */
 
-console.log('Validation script loaded');
-
 // Initialize validation when page loads
 document.addEventListener('DOMContentLoaded', function () {
   // Get form elements
@@ -19,11 +17,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Check if we're on a form page
   if (!userRoleSelect || !userIdInput) {
-    console.log('Not on form page, validation not initialized');
     return;
   }
-
-  console.log('Validation initialized successfully');
 
   /**
    * ID Format patterns for different user roles
@@ -55,8 +50,6 @@ document.addEventListener('DOMContentLoaded', function () {
         '<i class="bi bi-info-circle"></i> Please select your role first';
       userIdInput.placeholder = 'Enter your ID';
     }
-
-    console.log(`Help text updated for role: ${role}`);
   }
 
   /**
@@ -99,7 +92,6 @@ document.addEventListener('DOMContentLoaded', function () {
       userIdInput.classList.add('is-invalid');
       userIdInput.classList.remove('is-valid');
 
-      console.warn(`Invalid User ID: ${userId} for role: ${role}`);
       return false;
     } else {
       // Valid ID
@@ -107,7 +99,6 @@ document.addEventListener('DOMContentLoaded', function () {
       userIdInput.classList.remove('is-invalid');
       userIdInput.classList.add('is-valid');
 
-      console.log(`Valid User ID: ${userId} for role: ${role}`);
       return true;
     }
   }
@@ -144,8 +135,6 @@ document.addEventListener('DOMContentLoaded', function () {
     userIdInput.value = ''; // Clear previous input
     userIdError.style.display = 'none';
     userIdInput.classList.remove('is-invalid', 'is-valid');
-
-    console.log(`User role changed to: ${this.value}`);
   });
 
   // Event listener: Real-time validation on input
@@ -156,11 +145,8 @@ document.addEventListener('DOMContentLoaded', function () {
   // Event listener: Form submission validation
   if (issueForm) {
     issueForm.addEventListener('submit', function (e) {
-      console.log('Form submission attempted');
-
       if (!validateForm()) {
         e.preventDefault();
-        console.warn('Form validation failed, submission prevented');
         return false;
       }
 
@@ -170,8 +156,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const originalText = submitBtn.innerHTML;
         submitBtn.innerHTML =
           '<span class="spinner-border spinner-border-sm"></span> Submitting...';
-
-        console.log('Form validated successfully, submitting...');
       }
     });
   }
@@ -183,6 +167,4 @@ document.addEventListener('DOMContentLoaded', function () {
   if (userIdInput.value) {
     validateUserId();
   }
-
-  console.log('Validation event listeners attached');
 });

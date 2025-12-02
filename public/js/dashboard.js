@@ -22,7 +22,6 @@ $(document).ready(function () {
         !!$('#categoryFilter').val() ||
         !!$('#roleFilter').val()
     );
-    console.log(`Status filtered to: ${status} (multi-filter allowed)`);
   });
 
   // Category and role also trigger multi-filter
@@ -112,9 +111,9 @@ $(document).ready(function () {
   // Hidden status filter
   $('body').append('<input type="hidden" id="statusFilterHidden" value="">');
 
-  // Initial count update after first draw
+  // Initial count update after first draw (delayed for AJAX)
   table.on('init.dt', function () {
-    updateCounts();
+    setTimeout(updateCounts, 50); // NEW: Short delay to ensure table ready
   });
 
   // CLEAN HTML BADGE TEXT → raw string
@@ -125,6 +124,7 @@ $(document).ready(function () {
   // Update counts based on filtered data
   function updateCounts() {
     try {
+      if (!table || !table.rows) return; // NEW: Strong null check
       const filteredData = table.rows({ filter: 'applied' }).data().toArray();
       const counts = { Pending: 0, 'In Progress': 0, Completed: 0 };
       filteredData.forEach((row) => {
@@ -139,7 +139,7 @@ $(document).ready(function () {
       const info = table.page.info();
       $('#totalCount').text(info.recordsDisplay);
     } catch (e) {
-      console.error('Error updating counts:', e);
+      // Silent fail—don't log every time
     }
   }
 
