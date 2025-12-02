@@ -196,24 +196,16 @@ $(document).ready(function () {
     }
   });
 
-  // Dropdown filters
-  $('#categoryFilter, #roleFilter').on('change', function () {
-    table.draw();
-    updateCurrentFilter();
-    const isFiltering =
-      $('#categoryFilter').val() ||
-      $('#roleFilter').val() ||
-      $('#statusFilterHidden').val();
-    $('#clearFilters').toggle(!!isFiltering);
-  });
-
   // Clear filters
   $('#clearFilters').on('click', function () {
     $('#statusFilterHidden').val('');
+    $('#statusFilter').val(''); // NEW: Clear the dropdown too
     $('#categoryFilter').val('');
     $('#roleFilter').val('');
     updateCurrentFilter();
-    table.draw();
+    if (table) {
+      table.draw();
+    }
     $(this).hide();
   });
 
