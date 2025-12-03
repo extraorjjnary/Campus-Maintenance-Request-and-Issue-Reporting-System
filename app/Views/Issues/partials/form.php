@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Form Partial - Reusable Issue Form (Bootstrap 5 Enhanced)
+ * Form Partial - Reusable Issue Form (Uniform Bootstrap Design)
  * Used by both create.php and edit.php
  */
 
@@ -34,24 +34,24 @@ function old($field, $issueData = [], $default = '')
   <?php endif; ?>
 
   <!-- User Information Section -->
-  <h5 class="border-bottom border-2 pb-3 mb-4 text-dark fw-bold">
-    <i class="bi bi-person-badge me-2 <?php echo $isEdit ? 'text-warning' : 'text-primary'; ?>"></i>Reporter Information
+  <h5 class="border-bottom border-2 <?php echo $isEdit ? 'border-warning' : 'border-primary'; ?> border-opacity-25 pb-3 mb-4 text-dark fw-bold">
+    <i class="bi bi-person-badge <?php echo $isEdit ? 'text-warning' : 'text-primary'; ?> me-2"></i>Reporter Information
   </h5>
 
-  <div class="row g-3">
+  <div class="row g-3 mb-4">
     <!-- User Role -->
     <div class="col-md-6">
       <label for="user_role" class="form-label fw-semibold <?php echo !$isEdit ? 'required' : ''; ?>">User Role</label>
-      <select class="form-select form-select-lg rounded-3" id="user_role" name="user_role" <?php echo $isEdit ? 'disabled' : ''; ?> <?php echo $isEdit ? '' : 'required'; ?>>
+      <select class="form-select form-select-lg rounded-3 border-2" id="user_role" name="user_role" <?php echo $isEdit ? 'disabled' : ''; ?> <?php echo $isEdit ? '' : 'required'; ?>>
         <option value="">Select Your Role</option>
         <option value="Student" <?php echo old('user_role', $issue) == 'Student' ? 'selected' : ''; ?>>
-          Student
+          👨‍🎓 Student
         </option>
         <option value="Staff" <?php echo old('user_role', $issue) == 'Staff' ? 'selected' : ''; ?>>
-          Staff
+          👔 Staff
         </option>
         <option value="Instructor" <?php echo old('user_role', $issue) == 'Instructor' ? 'selected' : ''; ?>>
-          Instructor
+          👨‍🏫 Instructor
         </option>
       </select>
       <?php if ($isEdit): ?>
@@ -67,7 +67,7 @@ function old($field, $issueData = [], $default = '')
     <div class="col-md-6">
       <label for="user_id" class="form-label fw-semibold <?php echo !$isEdit ? 'required' : ''; ?>">User ID</label>
       <input type="text"
-        class="form-control form-control-lg rounded-3"
+        class="form-control form-control-lg rounded-3 border-2"
         id="user_id"
         name="user_id"
         placeholder="Enter your ID"
@@ -88,15 +88,15 @@ function old($field, $issueData = [], $default = '')
   </div>
 
   <!-- Issue Information Section -->
-  <h5 class="border-bottom border-2 pb-3 mb-4 mt-5 text-dark fw-bold">
-    <i class="bi bi-clipboard-data me-2 <?php echo $isEdit ? 'text-warning' : 'text-primary'; ?>"></i>Issue Details
+  <h5 class="border-bottom border-2 <?php echo $isEdit ? 'border-warning' : 'border-primary'; ?> border-opacity-25 pb-3 mb-4 text-dark fw-bold">
+    <i class="bi bi-clipboard-data <?php echo $isEdit ? 'text-warning' : 'text-primary'; ?> me-2"></i>Issue Details
   </h5>
 
   <!-- Issue Title -->
   <div class="mb-4">
     <label for="title" class="form-label fw-semibold required">Issue Title</label>
     <input type="text"
-      class="form-control form-control-lg rounded-3"
+      class="form-control form-control-lg rounded-3 border-2"
       id="title"
       name="title"
       placeholder="Brief description (e.g., Broken Window in Classroom)"
@@ -107,7 +107,7 @@ function old($field, $issueData = [], $default = '')
   <!-- Description -->
   <div class="mb-4">
     <label for="description" class="form-label fw-semibold required">Detailed Description</label>
-    <textarea class="form-control form-control-lg rounded-3"
+    <textarea class="form-control form-control-lg rounded-3 border-2"
       id="description"
       name="description"
       rows="5"
@@ -122,31 +122,31 @@ function old($field, $issueData = [], $default = '')
     <!-- Category -->
     <div class="col-md-6">
       <label for="category" class="form-label fw-semibold required">Category</label>
-      <select class="form-select form-select-lg rounded-3" id="category" name="category" required>
+      <select class="form-select form-select-lg rounded-3 border-2" id="category" name="category" required>
         <option value="">Select Category</option>
         <option value="Plumbing" <?php echo old('category', $issue) == 'Plumbing' ? 'selected' : ''; ?>>
-          Plumbing
+          🚰 Plumbing
         </option>
         <option value="Electrical" <?php echo old('category', $issue) == 'Electrical' ? 'selected' : ''; ?>>
-          Electrical
+          ⚡ Electrical
         </option>
         <option value="Infrastructure" <?php echo old('category', $issue) == 'Infrastructure' ? 'selected' : ''; ?>>
-          Infrastructure
+          🏗️ Infrastructure
         </option>
         <option value="HVAC" <?php echo old('category', $issue) == 'HVAC' ? 'selected' : ''; ?>>
-          HVAC (Heating/Cooling)
+          ❄️ HVAC
         </option>
         <option value="Equipment" <?php echo old('category', $issue) == 'Equipment' ? 'selected' : ''; ?>>
-          Equipment
+          🔧 Equipment
         </option>
         <option value="Furniture" <?php echo old('category', $issue) == 'Furniture' ? 'selected' : ''; ?>>
-          Furniture
+          🪑 Furniture
         </option>
         <option value="Landscaping" <?php echo old('category', $issue) == 'Landscaping' ? 'selected' : ''; ?>>
-          Landscaping
+          🌳 Landscaping
         </option>
         <option value="Other" <?php echo old('category', $issue) == 'Other' ? 'selected' : ''; ?>>
-          Other
+          📦 Other
         </option>
       </select>
     </div>
@@ -155,7 +155,7 @@ function old($field, $issueData = [], $default = '')
     <div class="col-md-6">
       <label for="location" class="form-label fw-semibold required">Location</label>
       <input type="text"
-        class="form-control form-control-lg rounded-3"
+        class="form-control form-control-lg rounded-3 border-2"
         id="location"
         name="location"
         placeholder="e.g., Building A - Room 301"
@@ -173,7 +173,7 @@ function old($field, $issueData = [], $default = '')
       <label class="form-label fw-semibold">
         <i class="bi bi-image me-2"></i>Current Image
       </label>
-      <div class="border rounded-3 p-3 bg-light">
+      <div class="border border-2 rounded-3 p-3 bg-light">
         <img src="uploads/<?php echo htmlspecialchars($issue['image']); ?>"
           alt="Current Image"
           class="img-fluid rounded-3 shadow-sm"
@@ -192,7 +192,7 @@ function old($field, $issueData = [], $default = '')
       <i class="bi bi-cloud-upload me-2"></i><?php echo ($isEdit && !empty($issue['image'])) ? 'Upload New Image (Optional)' : 'Upload Image (Optional)'; ?>
     </label>
     <input type="file"
-      class="form-control form-control-lg rounded-3"
+      class="form-control form-control-lg rounded-3 border-2"
       id="image"
       name="image"
       accept="image/jpeg,image/png,image/jpg">
@@ -207,7 +207,7 @@ function old($field, $issueData = [], $default = '')
     <label class="form-label fw-semibold">
       ✨ <?php echo $isEdit ? 'New Image Preview' : 'Image Preview'; ?>
     </label>
-    <div class="border rounded-3 p-3 bg-light">
+    <div class="border border-2 rounded-3 p-3 bg-light">
       <img id="preview" src="" alt="Preview" class="img-fluid rounded-3 shadow-sm" style="max-width: 400px;">
       <button type="button" class="btn <?php echo $isEdit ? 'btn-warning' : 'btn-danger'; ?> btn-sm mt-3 rounded-3" onclick="clearImage()">
         <i class="bi bi-x me-1"></i>Remove <?php echo $isEdit ? 'New ' : ''; ?>Image
@@ -217,7 +217,7 @@ function old($field, $issueData = [], $default = '')
 
   <?php if (!$isEdit): ?>
     <!-- Info Alert (Create Mode Only) -->
-    <div class="alert alert-info border-0 border-start border-primary border-4 bg-primary bg-opacity-10">
+    <div class="alert alert-info border-0 border-start border-primary border-4 bg-primary bg-opacity-10 rounded-3">
       <i class="bi bi-info-circle me-2"></i>
       <strong>Note:</strong> All reported issues will be reviewed by the maintenance team.
       You can check the status of your report anytime on the main page.
@@ -225,13 +225,13 @@ function old($field, $issueData = [], $default = '')
   <?php endif; ?>
 
   <!-- Form Actions -->
-  <div class="d-flex justify-content-between flex-wrap gap-3 mt-4 pt-3 border-top">
+  <div class="d-flex justify-content-between flex-wrap gap-3 mt-4 pt-4 border-top border-2">
     <a href="<?php echo $isEdit ? 'index.php?action=show&id=' . $issue['id'] : 'index.php'; ?>"
-      class="btn btn-secondary btn-lg rounded-3 px-4">
-      <i class="bi bi-arrow-left me-2"></i><?php echo $isEdit ? 'Cancel' : 'Back to List'; ?>
+      class="btn btn-secondary btn-lg rounded-pill px-4 shadow-sm">
+      <i class="bi bi-arrow-left me-2"></i><?php echo $isEdit ? 'Cancel' : 'Back to Dashboard'; ?>
     </a>
     <button type="submit"
-      class="btn <?php echo $isEdit ? 'btn-warning' : 'btn-primary'; ?> btn-lg rounded-3 px-4 shadow-sm"
+      class="btn <?php echo $isEdit ? 'btn-warning' : 'btn-primary'; ?> btn-lg rounded-pill px-4 shadow-sm"
       id="submitBtn">
       <i class="bi bi-<?php echo $isEdit ? 'save' : 'send'; ?> me-2"></i>
       <?php echo $isEdit ? 'Update Issue' : 'Submit Issue Report'; ?>
