@@ -203,7 +203,7 @@ function old($field, $issueData = [], $default = '')
   </div>
 
   <!-- Image Preview -->
-  <div class="mb-4" id="imagePreview" style="display: none;">
+  <div class="mb-4 d-none" id="imagePreview"> <!-- Changed from style="display: none;" to d-none -->
     <label class="form-label fw-semibold">
       ✨ <?php echo $isEdit ? 'New Image Preview' : 'Image Preview'; ?>
     </label>
