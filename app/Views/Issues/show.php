@@ -347,7 +347,6 @@
 
   <!-- Custom JavaScript Files -->
   <script src="js/status.js"></script>
-  <script src="js/feedbacks.js"></script>
   <script src="js/alerts.js"></script>
 
 </body>

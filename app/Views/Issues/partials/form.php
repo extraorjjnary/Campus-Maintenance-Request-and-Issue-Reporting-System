@@ -20,13 +20,6 @@ function old($field, $issueData = [], $default = '')
 }
 ?>
 
-<style>
-  .required::after {
-    content: " *";
-    color: #dc3545;
-  }
-</style>
-
 <form method="<?php echo $method; ?>" action="<?php echo $action; ?>" enctype="multipart/form-data" id="<?php echo $isEdit ? 'editForm' : 'issueForm'; ?>">
 
   <?php if ($isEdit): ?>
@@ -41,7 +34,7 @@ function old($field, $issueData = [], $default = '')
   <div class="row g-3 mb-4">
     <!-- User Role -->
     <div class="col-md-6">
-      <label for="user_role" class="form-label fw-semibold <?php echo !$isEdit ? 'required' : ''; ?>">User Role</label>
+      <label for="user_role" class="form-label fw-semibold">User Role</label>
       <select class="form-select form-select-lg rounded-3 border-2" id="user_role" name="user_role" <?php echo $isEdit ? 'disabled' : ''; ?> <?php echo $isEdit ? '' : 'required'; ?>>
         <option value="">Select Your Role</option>
         <option value="Student" <?php echo old('user_role', $issue) == 'Student' ? 'selected' : ''; ?>>
@@ -65,7 +58,7 @@ function old($field, $issueData = [], $default = '')
 
     <!-- User ID -->
     <div class="col-md-6">
-      <label for="user_id" class="form-label fw-semibold <?php echo !$isEdit ? 'required' : ''; ?>">User ID</label>
+      <label for="user_id" class="form-label fw-semibold">User ID</label>
       <input type="text"
         class="form-control form-control-lg rounded-3 border-2"
         id="user_id"
@@ -94,7 +87,7 @@ function old($field, $issueData = [], $default = '')
 
   <!-- Issue Title -->
   <div class="mb-4">
-    <label for="title" class="form-label fw-semibold required">Issue Title</label>
+    <label for="title" class="form-label fw-semibold">Issue Title</label>
     <input type="text"
       class="form-control form-control-lg rounded-3 border-2"
       id="title"
@@ -106,7 +99,7 @@ function old($field, $issueData = [], $default = '')
 
   <!-- Description -->
   <div class="mb-4">
-    <label for="description" class="form-label fw-semibold required">Detailed Description</label>
+    <label for="description" class="form-label fw-semibold">Detailed Description</label>
     <textarea class="form-control form-control-lg rounded-3 border-2"
       id="description"
       name="description"
@@ -121,7 +114,7 @@ function old($field, $issueData = [], $default = '')
   <div class="row g-3 mb-4">
     <!-- Category -->
     <div class="col-md-6">
-      <label for="category" class="form-label fw-semibold required">Category</label>
+      <label for="category" class="form-label fw-semibold">Category</label>
       <select class="form-select form-select-lg rounded-3 border-2" id="category" name="category" required>
         <option value="">Select Category</option>
         <option value="Plumbing" <?php echo old('category', $issue) == 'Plumbing' ? 'selected' : ''; ?>>
@@ -153,7 +146,7 @@ function old($field, $issueData = [], $default = '')
 
     <!-- Location -->
     <div class="col-md-6">
-      <label for="location" class="form-label fw-semibold required">Location</label>
+      <label for="location" class="form-label fw-semibold">Location</label>
       <input type="text"
         class="form-control form-control-lg rounded-3 border-2"
         id="location"
@@ -203,7 +196,7 @@ function old($field, $issueData = [], $default = '')
   </div>
 
   <!-- Image Preview -->
-  <div class="mb-4 d-none" id="imagePreview"> <!-- Changed from style="display: none;" to d-none -->
+  <div class="mb-4 d-none" id="imagePreview">
     <label class="form-label fw-semibold">
       ✨ <?php echo $isEdit ? 'New Image Preview' : 'Image Preview'; ?>
     </label>

@@ -17,11 +17,6 @@
     .navbar-gradient {
       background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
     }
-
-    .required::after {
-      content: " *";
-      color: #dc3545;
-    }
   </style>
 </head>
 

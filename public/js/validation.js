@@ -37,6 +37,9 @@ document.addEventListener('DOMContentLoaded', function () {
   function updateHelpText() {
     const role = userRoleSelect.value;
 
+    // Null check for edit mode (no help text)
+    if (!userIdHelp) return;
+
     if (role === 'Student') {
       userIdHelp.innerHTML =
         '<i class="bi bi-info-circle"></i> Format: <strong>YY-XXXX</strong> (e.g., 23-4302)';
@@ -60,10 +63,18 @@ document.addEventListener('DOMContentLoaded', function () {
     const role = userRoleSelect.value;
     const userId = userIdInput.value.trim();
 
+    // Skip validation classes for readonly fields in edit mode
+    const isReadonly = userIdInput.readOnly;
+    if (isReadonly) {
+      return true; // Assume valid if readonly
+    }
+
     // Check if role is selected
     if (!role) {
-      userIdError.textContent = 'Please select your role first';
-      userIdError.style.display = 'block';
+      if (userIdError) {
+        userIdError.textContent = 'Please select your role first';
+        userIdError.style.display = 'block';
+      }
       userIdInput.classList.add('is-invalid');
       userIdInput.classList.remove('is-valid');
       return false;
@@ -71,7 +82,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // If input is empty, just remove validation classes
     if (!userId) {
-      userIdError.style.display = 'none';
+      if (userIdError) {
+        userIdError.style.display = 'none';
+      }
       userIdInput.classList.remove('is-invalid', 'is-valid');
       return false;
     }
@@ -87,15 +100,19 @@ document.addEventListener('DOMContentLoaded', function () {
           'Staff/Instructor ID must be in format: EMP-XXXX (e.g., EMP-2043)';
       }
 
-      userIdError.textContent = formatMessage;
-      userIdError.style.display = 'block';
+      if (userIdError) {
+        userIdError.textContent = formatMessage;
+        userIdError.style.display = 'block';
+      }
       userIdInput.classList.add('is-invalid');
       userIdInput.classList.remove('is-valid');
 
       return false;
     } else {
       // Valid ID
-      userIdError.style.display = 'none';
+      if (userIdError) {
+        userIdError.style.display = 'none';
+      }
       userIdInput.classList.remove('is-invalid');
       userIdInput.classList.add('is-valid');
 
@@ -133,7 +150,9 @@ document.addEventListener('DOMContentLoaded', function () {
   userRoleSelect.addEventListener('change', function () {
     updateHelpText();
     userIdInput.value = ''; // Clear previous input
-    userIdError.style.display = 'none';
+    if (userIdError) {
+      userIdError.style.display = 'none';
+    }
     userIdInput.classList.remove('is-invalid', 'is-valid');
   });
 
