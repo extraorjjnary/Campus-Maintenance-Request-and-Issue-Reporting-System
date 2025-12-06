@@ -9,7 +9,6 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 
   <style>
-    /* Minimal CSS - Only what Bootstrap can't do */
     body {
       background: linear-gradient(to bottom, #e0e7ff 0%, #f3f4f6 100%);
     }
@@ -52,7 +51,6 @@
       </a>
 
       <!-- Right Side Actions -->
-      <!-- Replace the "Right Side Actions" section with: -->
       <div class="d-flex align-items-center gap-2 gap-md-3">
         <div class="d-none d-md-flex align-items-center gap-2 text-white bg-white bg-opacity-10 rounded-pill px-3 py-2">
           <i class="bi bi-eye"></i>
@@ -287,7 +285,11 @@
 
               <div class="mb-3">
                 <label class="form-label fw-semibold">Current Status</label>
-                <select class="form-select form-select-lg rounded-3 bg-white text-dark border-2" name="status" id="statusSelect" required>
+                <select class="form-select form-select-lg rounded-3 bg-white text-dark border-2"
+                  name="status"
+                  id="statusSelect"
+                  data-current="<?php echo $issue['status']; ?>"
+                  required>
                   <option value="Pending" <?php echo $issue['status'] == 'Pending' ? 'selected' : ''; ?>>
                     ⏳ Pending
                   </option>
@@ -366,12 +368,50 @@
     </div>
   </div>
 
+  <!-- Status Update Confirmation Modal -->
+  <div class="modal fade" id="statusConfirmModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg rounded-4">
+        <div class="modal-header bg-primary text-white border-0 rounded-top-4">
+          <h5 class="modal-title fw-bold">
+            <i class="bi bi-question-circle-fill me-2"></i>Confirm Status Update
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <p class="mb-3">Are you sure you want to update the status?</p>
+          <div class="alert alert-info border-0 bg-info bg-opacity-10 border-start border-info border-4 mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="fw-semibold">Current Status:</span>
+              <span id="currentStatusBadge" class="badge bg-secondary px-3 py-2"></span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="fw-semibold">New Status:</span>
+              <span id="newStatusBadge" class="badge bg-primary px-3 py-2"></span>
+            </div>
+          </div>
+          <p class="text-muted small mb-0">
+            <i class="bi bi-info-circle me-1"></i>This will update the issue status and notify relevant parties.
+          </p>
+        </div>
+        <div class="modal-footer border-0 bg-light rounded-bottom-4">
+          <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">
+            <i class="bi bi-x me-1"></i>Cancel
+          </button>
+          <button type="button" class="btn btn-primary rounded-pill px-4" id="confirmStatusUpdate">
+            <i class="bi bi-check-circle me-2"></i>Confirm Update
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
   <!-- Custom JavaScript Files -->
-  <script src="js/status.js"></script>
   <script src="js/alerts.js"></script>
+  <script src="js/status-update.js"></script>
 
 </body>
 
