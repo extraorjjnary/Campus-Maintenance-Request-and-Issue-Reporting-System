@@ -213,15 +213,29 @@ function old($field, $issueData = [], $default = '')
     <div class="alert alert-info border-0 border-start border-primary border-4 bg-primary bg-opacity-10 rounded-3">
       <i class="bi bi-info-circle me-2"></i>
       <strong>Note:</strong> All reported issues will be reviewed by the maintenance team.
-      You can check the status of your report anytime on the main page.
+      <?php
+      // Check if this is from public form (landing.php) or admin form (index.php)
+      $isPublicForm = strpos($action, 'landing.php') !== false;
+      ?>
+      <?php if ($isPublicForm): ?>
+        Thank you for helping maintain our campus!
+      <?php else: ?>
+        You can check the status of your report anytime on the dashboard.
+      <?php endif; ?>
     </div>
   <?php endif; ?>
 
   <!-- Form Actions -->
   <div class="d-flex justify-content-between flex-wrap gap-3 mt-4 pt-4 border-top border-2">
-    <a href="<?php echo $isEdit ? 'index.php?action=show&id=' . $issue['id'] : 'index.php'; ?>"
+    <?php
+    // Determine back link based on form context
+    $isPublicForm = strpos($action, 'landing.php') !== false;
+    $backLink = $isEdit ? 'index.php?action=show&id=' . $issue['id'] : ($isPublicForm ? 'landing.php' : 'index.php');
+    $backText = $isEdit ? 'Cancel' : ($isPublicForm ? 'Back to Home' : 'Back to Dashboard');
+    ?>
+    <a href="<?php echo $backLink; ?>"
       class="btn btn-secondary btn-lg rounded-pill px-4 shadow-sm">
-      <i class="bi bi-arrow-left me-2"></i><?php echo $isEdit ? 'Cancel' : 'Back to Dashboard'; ?>
+      <i class="bi bi-arrow-left me-2"></i><?php echo $backText; ?>
     </a>
     <button type="submit"
       class="btn <?php echo $isEdit ? 'btn-warning' : 'btn-primary'; ?> btn-lg rounded-pill px-4 shadow-sm"

@@ -7,11 +7,10 @@
   <title>Campus Maintenance System</title>
 
   <!-- Bootstrap 5 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-
+  <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/bootstrap-icons.css">
   <!-- DataTables CSS -->
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+  <link rel="stylesheet" href="assets/css/dataTables.bootstrap5.min.css">
 
   <style>
     /* Minimal CSS - Only what Bootstrap can't do */
@@ -369,7 +368,7 @@
         <div class="modal-body p-4">
           <p class="mb-3">Are you sure you want to delete this issue?</p>
           <div class="alert alert-warning border-0 bg-warning bg-opacity-10 border-start border-warning border-4 mb-3">
-            <strong class="d-block mb-1">Issue Details:</strong>
+            <strong class="d-block mb-1">Issue Title:</strong>
             <span id="deleteIssueName" class="text-dark"></span>
           </div>
           <p class="text-danger fw-bold mb-0">
@@ -392,10 +391,12 @@
   </div>
 
   <!-- JS -->
-  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-  <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+
+  <script src="assets/js/jquery.min.js"></script>
+  <script src="assets/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/jquery.dataTables.min.js"></script>
+  <script src="assets/js/dataTables.bootstrap5.min.js"></script>
+
 
   <!-- Custom JavaScript Files -->
   <script src="js/alerts.js"></script>
