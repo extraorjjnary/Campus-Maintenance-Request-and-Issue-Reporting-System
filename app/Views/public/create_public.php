@@ -12,18 +12,14 @@ session_start();
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 
   <style>
-    body {
-      background: linear-gradient(to bottom, #e0e7ff 0%, #f3f4f6 100%);
-    }
-
     .navbar-gradient {
       background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
     }
   </style>
 </head>
 
-<body class="min-vh-100">
-  <!-- Public Navbar (No Logout) -->
+<body class="bg-light min-vh-100">
+  <!-- Public Navbar -->
   <nav class="navbar navbar-expand-lg navbar-dark navbar-gradient shadow-lg py-3">
     <div class="container-fluid px-4">
       <a class="navbar-brand d-flex align-items-center gap-3 text-decoration-none" href="landing.php">

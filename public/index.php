@@ -2,7 +2,8 @@
 
 /**
  * Main Router - Entry Point with Authentication
- * Handles all requests and routes to appropriate controller methods
+ * Landing page for public users, dashboard for logged-in admins
+ * Admin features require authentication
  */
 
 session_start();
@@ -10,7 +11,19 @@ session_start();
 require_once __DIR__ . '/../app/Controllers/IssueController.php';
 require_once __DIR__ . '/../app/Controllers/AuthController.php';
 
-$action = isset($_GET['action']) ? $_GET['action'] : 'index';
+$action = isset($_GET['action']) ? $_GET['action'] : 'default';
+
+// Default action - check if admin is logged in
+if ($action === 'default') {
+  if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
+    // Admin is logged in - go to dashboard
+    $action = 'index';
+  } else {
+    // Not logged in - go to landing page
+    header('Location: landing.php');
+    exit;
+  }
+}
 
 // Auth actions (no login required)
 if ($action === 'showLogin') {
