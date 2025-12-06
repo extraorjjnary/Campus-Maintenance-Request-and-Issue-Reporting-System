@@ -52,18 +52,42 @@
       </a>
 
       <!-- Right Side Actions -->
+      <!-- Replace the "Right Side Actions" section with: -->
       <div class="d-flex align-items-center gap-2 gap-md-3">
-        <!-- Current Page Badge -->
         <div class="d-none d-md-flex align-items-center gap-2 text-white bg-white bg-opacity-10 rounded-pill px-3 py-2">
           <i class="bi bi-eye"></i>
           <span class="fw-semibold small">Issue Details</span>
         </div>
 
-        <!-- Divider -->
         <div class="vr bg-white opacity-25 d-none d-md-block" style="height: 30px;"></div>
 
-        <!-- Back Button -->
-        <a href="index.php" class="btn btn-light fw-semibold rounded-pill px-3 px-md-4 shadow-sm">
+        <div class="dropdown">
+          <button class="btn btn-light rounded-pill px-3 fw-semibold dropdown-toggle"
+            type="button"
+            id="adminDropdown"
+            data-bs-toggle="dropdown"
+            aria-expanded="false">
+            <i class="bi bi-person-circle me-1"></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end shadow-lg" aria-labelledby="adminDropdown">
+            <li>
+              <span class="dropdown-item-text">
+                <i class="bi bi-shield-check me-2 text-primary"></i>
+                <strong><?php echo isset($_SESSION['admin_username']) ? $_SESSION['admin_username'] : 'Admin'; ?></strong>
+              </span>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li>
+              <a class="dropdown-item text-danger" href="index.php?action=logout">
+                <i class="bi bi-box-arrow-right me-2"></i>Logout
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <a href="index.php" class="btn btn-secondary fw-semibold rounded-pill px-3 px-md-4 shadow-sm">
           <i class="bi bi-arrow-left me-1"></i>
           <span class="d-none d-sm-inline">Dashboard</span>
         </a>
