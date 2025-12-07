@@ -1,6 +1,3 @@
-<?php
-session_start();
-?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,13 +9,12 @@ session_start();
   <link rel="stylesheet" href="assets/css/bootstrap-icons.css">
 
   <style>
+    /* Minimal Custom CSS: Only gradients, animation, and toast pos (irreplaceable by Bootstrap) */
     .navbar-gradient {
       background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
     }
 
     .hero-icon {
-      font-size: 5rem;
-      color: #1e40af;
       animation: float 3s ease-in-out infinite;
     }
 
@@ -34,19 +30,27 @@ session_start();
       }
     }
 
-    .feature-card {
+    .feature-card-hover {
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
-    .feature-card:hover {
+    .feature-card-hover:hover {
       transform: translateY(-10px);
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    /* Toast Positioning - Top-right popup banner */
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1090;
     }
   </style>
 </head>
 
 <body class="bg-light">
-  <!-- Navbar -->
+  <!-- Navbar (Uses bg-primary as fallback; custom gradient applied) -->
   <nav class="navbar navbar-expand-lg navbar-dark navbar-gradient shadow-lg py-3">
     <div class="container">
       <a class="navbar-brand d-flex align-items-center gap-3" href="landing.php">
@@ -67,17 +71,8 @@ session_start();
     </div>
   </nav>
 
-  <!-- Alert Messages -->
+  <!-- Error Alert Messages (Static, auto-dismissed by alerts.js) -->
   <div class="container mt-4">
-    <?php if (isset($_SESSION['success'])): ?>
-      <div class="alert alert-success alert-dismissible fade show border-0 shadow border-start border-success border-5 bg-white" role="alert">
-        <i class="bi bi-check-circle-fill me-2"></i>
-        <strong><?php echo $_SESSION['success'];
-                unset($_SESSION['success']); ?></strong>
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-      </div>
-    <?php endif; ?>
-
     <?php if (isset($_SESSION['errors'])): ?>
       <div class="alert alert-danger alert-dismissible fade show border-0 shadow border-start border-danger border-5 bg-white" role="alert">
         <i class="bi bi-exclamation-triangle-fill me-2"></i>
@@ -93,10 +88,27 @@ session_start();
     <?php endif; ?>
   </div>
 
-  <!-- Hero Section -->
+  <!-- Success Popup Banner (Bootstrap Toast) -->
+  <?php if (isset($_SESSION['success'])): ?>
+    <div class="toast-container">
+      <div class="toast align-items-center text-white bg-success border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+        <div class="d-flex">
+          <div class="toast-body d-flex align-items-center gap-2">
+            <i class="bi bi-check-circle-fill fs-4"></i>
+            <strong><?php echo htmlspecialchars($_SESSION['success']); ?></strong>
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+      </div>
+    </div>
+    <?php unset($_SESSION['success']); // Clear after outputting 
+    ?>
+  <?php endif; ?>
+
+  <!-- Hero Section (Bootstrap: fs-display-4, text-center, py-5) -->
   <div class="py-5 text-center">
     <div class="container">
-      <div class="hero-icon mb-4">
+      <div class="hero-icon mb-4 text-primary" style="font-size: 5rem; color: #1e40af;"> <!-- Minimal inline for color fallback -->
         <i class="bi bi-tools"></i>
       </div>
 
@@ -124,15 +136,15 @@ session_start();
     </div>
   </div>
 
-  <!-- Features Section -->
+  <!-- Features Section (Bootstrap: row g-4, card shadow-sm rounded-4) -->
   <div class="container pb-5">
     <h2 class="text-center fw-bold mb-5 text-dark">Why Report Issues?</h2>
 
     <div class="row g-4">
       <div class="col-md-4">
-        <div class="card feature-card shadow-sm border-0 rounded-4 h-100">
+        <div class="card feature-card-hover shadow-sm border-0 rounded-4 h-100"> <!-- Custom hover class applied -->
           <div class="card-body text-center p-4">
-            <div class="text-primary mb-3" style="font-size: 3rem;">
+            <div class="text-primary mb-3 fs-1"> <!-- Bootstrap fs-1 for ~3rem size -->
               <i class="bi bi-lightning-charge-fill"></i>
             </div>
             <h4 class="fw-bold mb-3">Fast Response</h4>
@@ -144,9 +156,9 @@ session_start();
       </div>
 
       <div class="col-md-4">
-        <div class="card feature-card shadow-sm border-0 rounded-4 h-100">
+        <div class="card feature-card-hover shadow-sm border-0 rounded-4 h-100">
           <div class="card-body text-center p-4">
-            <div class="text-primary mb-3" style="font-size: 3rem;">
+            <div class="text-primary mb-3 fs-1">
               <i class="bi bi-shield-check"></i>
             </div>
             <h4 class="fw-bold mb-3">Safe Campus</h4>
@@ -158,9 +170,9 @@ session_start();
       </div>
 
       <div class="col-md-4">
-        <div class="card feature-card shadow-sm border-0 rounded-4 h-100">
+        <div class="card feature-card-hover shadow-sm border-0 rounded-4 h-100">
           <div class="card-body text-center p-4">
-            <div class="text-primary mb-3" style="font-size: 3rem;">
+            <div class="text-primary mb-3 fs-1">
               <i class="bi bi-people-fill"></i>
             </div>
             <h4 class="fw-bold mb-3">Community Effort</h4>
@@ -173,7 +185,7 @@ session_start();
     </div>
   </div>
 
-  <!-- Footer -->
+  <!-- Footer (Bootstrap: bg-dark, text-white) -->
   <footer class="bg-dark text-white py-4 mt-5">
     <div class="container text-center">
       <p class="mb-0">
@@ -185,7 +197,7 @@ session_start();
   </footer>
 
   <script src="assets/js/bootstrap.bundle.min.js"></script>
-  <script src="js/alerts.js"></script>
+  <script src="js/alerts.js"></script> <!-- Handles alert auto-dismiss + optional Toast init -->
 </body>
 
 </html>

@@ -1,10 +1,10 @@
 <?php
+session_start();  // Start session here for persistence across redirects
 
 /**
  * Landing Page Router - Public Access
  * Handles public issue reporting without authentication
  */
-
 
 $action = isset($_GET['action']) ? $_GET['action'] : 'landing';
 
@@ -81,7 +81,7 @@ if ($action === 'publicStore') {
 
   if ($issueModel->create($data)) {
     $_SESSION['success'] = "Issue reported successfully! Our maintenance team will review it shortly.";
-    unset($_SESSION['old_data']);
+    if (isset($_SESSION['old_data'])) unset($_SESSION['old_data']);  // Clean up
     header('Location: landing.php');
   } else {
     $_SESSION['errors'] = ["Failed to create issue"];

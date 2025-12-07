@@ -1,6 +1,3 @@
-<?php
-session_start();
-?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -63,19 +60,11 @@ session_start();
   </nav>
 
   <div class="container mt-4 mb-5">
-    <!-- Alert Messages -->
-    <?php if (isset($_SESSION['success'])): ?>
-      <div class="alert alert-success alert-dismissible fade show border-0 shadow border-start border-success border-5 bg-white" role="alert">
-        <i class="bi bi-check-circle-fill me-2"></i>
-        <strong><?php echo $_SESSION['success'];
-                unset($_SESSION['success']); ?></strong>
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-      </div>
-    <?php endif; ?>
-
+    <!-- Error Alerts Only (Success handled on landing Toast after redirect) -->
     <?php if (isset($_SESSION['errors'])): ?>
       <div class="alert alert-danger alert-dismissible fade show border-0 shadow border-start border-danger border-5 bg-white" role="alert">
-        <i class="bi bi-exclamation-triangle-fill me-2"></i><strong>Validation Errors:</strong>
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <strong>Validation Errors:</strong>
         <ul class="mb-0 mt-2">
           <?php foreach ($_SESSION['errors'] as $error): ?>
             <li><?php echo $error; ?></li>
@@ -114,7 +103,6 @@ session_start();
   <script src="js/validation.js"></script>
   <script src="js/preview.js"></script>
   <script src="js/alerts.js"></script>
-
 </body>
 
 </html>
