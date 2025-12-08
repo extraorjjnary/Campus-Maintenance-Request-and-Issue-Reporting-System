@@ -9,149 +9,78 @@
   <link rel="stylesheet" href="assets/css/bootstrap-icons.css">
 
   <style>
+    /* Only essential CSS that Bootstrap can't do */
     body {
       background: linear-gradient(to bottom, #e0e7ff 0%, #f3f4f6 100%);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .login-container {
-      max-width: 450px;
-      width: 100%;
-      padding: 20px;
-    }
-
-    .login-card {
-      background: white;
-      border-radius: 20px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-      overflow: hidden;
     }
 
     .login-header {
       background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
-      padding: 40px 30px;
-      text-align: center;
-      color: white;
-    }
-
-    .login-icon {
-      width: 80px;
-      height: 80px;
-      background: white;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 20px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    }
-
-    .login-icon i {
-      font-size: 2.5rem;
-      color: #1e40af;
-    }
-
-    .login-body {
-      padding: 40px 30px;
-    }
-
-    .form-control {
-      padding: 12px 15px;
-      border: 2px solid #e5e7eb;
-      border-radius: 10px;
-      font-size: 1rem;
-    }
-
-    .form-control:focus {
-      border-color: #1e40af;
-      box-shadow: 0 0 0 0.2rem rgba(30, 64, 175, 0.1);
-    }
-
-    .input-group-text {
-      background: transparent;
-      border: 2px solid #e5e7eb;
-      border-right: none;
-      border-radius: 10px 0 0 10px;
-    }
-
-    .input-group .form-control {
-      border-left: none;
-      border-radius: 0 10px 10px 0;
     }
 
     .btn-login {
-      padding: 12px;
-      font-size: 1.1rem;
-      font-weight: bold;
-      border-radius: 10px;
       background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
-      border: none;
-      transition: all 0.3s ease;
     }
 
     .btn-login:hover {
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(30, 64, 175, 0.3);
-    }
-
-    .back-link {
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    .back-link a {
-      color: #1e40af;
-      text-decoration: none;
-      font-weight: 600;
-      transition: color 0.3s ease;
-    }
-
-    .back-link a:hover {
-      color: #1e3a8a;
     }
   </style>
 </head>
 
-<body>
-  <div class="login-container">
-    <div class="login-card">
-      <div class="login-header">
-        <div class="login-icon">
-          <i class="bi bi-shield-lock-fill"></i>
+<body class="min-vh-100 d-flex align-items-center justify-content-center">
+  <div class="container" style="max-width: 450px;">
+    <!-- Success Alert -->
+    <?php if (isset($_SESSION['success'])): ?>
+      <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-3 border-start border-success border-4" role="alert" id="successAlert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <strong><?php echo htmlspecialchars($_SESSION['success']);
+                unset($_SESSION['success']); ?></strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    <?php endif; ?>
+
+    <!-- Error Alert -->
+    <?php if (isset($_SESSION['errors'])): ?>
+      <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm mb-3 border-start border-danger border-4" role="alert" id="errorAlert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <strong>
+          <?php
+          foreach ($_SESSION['errors'] as $error) {
+            echo htmlspecialchars($error);
+          }
+          unset($_SESSION['errors']);
+          ?>
+        </strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    <?php endif; ?>
+
+    <!-- Login Card -->
+    <div class="card border-0 rounded-4 shadow-lg overflow-hidden">
+      <!-- Header -->
+      <div class="login-header text-white text-center py-5">
+        <div class="bg-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3 shadow" style="width: 80px; height: 80px;">
+          <i class="bi bi-shield-lock-fill text-primary" style="font-size: 2.5rem;"></i>
         </div>
         <h3 class="fw-bold mb-2">Admin Portal</h3>
-        <p class="mb-0 opacity-90">Campus Maintenance System</p>
+        <p class="mb-0 opacity-75">Campus Maintenance System</p>
       </div>
 
-      <div class="login-body">
-        <!-- Error Messages -->
-        <?php if (isset($_SESSION['errors'])): ?>
-          <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm" role="alert">
-            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-            <?php
-            foreach ($_SESSION['errors'] as $error) {
-              echo $error;
-            }
-            unset($_SESSION['errors']);
-            ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-          </div>
-        <?php endif; ?>
-
+      <!-- Body -->
+      <div class="card-body p-4 p-md-5">
         <form method="POST" action="index.php?action=login" id="loginForm">
+          <!-- Username -->
           <div class="mb-4">
             <label class="form-label fw-semibold text-secondary">
               <i class="bi bi-person-fill me-1"></i>Username
             </label>
-            <div class="input-group">
-              <span class="input-group-text">
-                <i class="bi bi-person"></i>
+            <div class="input-group input-group-lg">
+              <span class="input-group-text bg-light border-end-0">
+                <i class="bi bi-person text-secondary"></i>
               </span>
               <input type="text"
-                class="form-control"
+                class="form-control border-start-0 ps-0"
                 name="username"
                 placeholder="Enter admin username"
                 required
@@ -159,48 +88,49 @@
             </div>
           </div>
 
+          <!-- Password -->
           <div class="mb-4">
             <label class="form-label fw-semibold text-secondary">
               <i class="bi bi-lock-fill me-1"></i>Password
             </label>
-            <div class="input-group">
-              <span class="input-group-text">
-                <i class="bi bi-lock"></i>
+            <div class="input-group input-group-lg">
+              <span class="input-group-text bg-light border-end-0">
+                <i class="bi bi-lock text-secondary"></i>
               </span>
               <input type="password"
-                class="form-control"
+                class="form-control border-start-0 border-end-0 ps-0"
                 name="password"
                 id="password"
                 placeholder="Enter admin password"
                 required>
-              <button class="btn btn-outline-secondary"
-                type="button"
-                id="togglePassword"
-                style="border: 2px solid #e5e7eb; border-left: none; border-radius: 0 10px 10px 0;">
+              <button class="btn btn-outline-secondary border-start-0" type="button" id="togglePassword">
                 <i class="bi bi-eye" id="toggleIcon"></i>
               </button>
             </div>
           </div>
 
-          <button type="submit" class="btn btn-primary btn-login w-100">
+          <!-- Login Button -->
+          <button type="submit" class="btn btn-primary btn-lg btn-login w-100 fw-bold border-0 shadow-sm">
             <i class="bi bi-box-arrow-in-right me-2"></i>Login
           </button>
         </form>
 
-        <div class="back-link">
-          <a href="landing.php">
+        <!-- Back Link -->
+        <div class="text-center mt-4">
+          <a href="landing.php" class="text-decoration-none fw-semibold">
             <i class="bi bi-arrow-left me-1"></i>Back to Landing Page
           </a>
         </div>
       </div>
     </div>
 
-    <p class="text-center text-muted mt-4 small">
+    <!-- Footer Text -->
+    <p class="text-center text-muted mt-4 small mb-0">
       <i class="bi bi-info-circle me-1"></i>Admin access only
     </p>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/bootstrap.bundle.min.js"></script>
 
   <script>
     // Toggle password visibility
@@ -219,15 +149,23 @@
       }
     });
 
-    // Auto-dismiss alerts
+    // Auto-dismiss alerts after 4 seconds
     document.addEventListener('DOMContentLoaded', function() {
-      const alerts = document.querySelectorAll('.alert');
-      alerts.forEach(function(alert) {
+      const successAlert = document.getElementById('successAlert');
+      if (successAlert) {
         setTimeout(function() {
-          const bsAlert = new bootstrap.Alert(alert);
+          const bsAlert = new bootstrap.Alert(successAlert);
           bsAlert.close();
-        }, 5000);
-      });
+        }, 4000);
+      }
+
+      const errorAlert = document.getElementById('errorAlert');
+      if (errorAlert) {
+        setTimeout(function() {
+          const bsAlert = new bootstrap.Alert(errorAlert);
+          bsAlert.close();
+        }, 4000);
+      }
     });
   </script>
 </body>

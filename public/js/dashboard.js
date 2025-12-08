@@ -1,6 +1,6 @@
 /**
  * dashboard.js
- * Handles DataTables initialization, filtering, and interactions on the issues dashboard
+ * Handles DataTables initialization, filtering, customize search. and interactions on the issues dashboard
  * Includes stat card updated whenever filtered data, custom search, and delete modal
  */
 
