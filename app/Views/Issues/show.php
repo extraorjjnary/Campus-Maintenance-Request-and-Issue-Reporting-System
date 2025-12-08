@@ -342,7 +342,9 @@
 
   </div>
 
+  <!-- JS -->
   <script src="assets/js/bootstrap.bundle.min.js"></script>
+  <!-- Custom JavaScript Files -->
   <script src="js/alerts.js"></script>
   <script src="js/status-update.js"></script>
 

@@ -9,7 +9,8 @@
   <link rel="stylesheet" href="assets/css/bootstrap-icons.css">
 
   <style>
-    /* Enhanced purple gradient background */
+    /* Minimal css internal only, if bootstrap can't handle */
+
     body {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       position: relative;
@@ -37,6 +38,14 @@
     .navbar-gradient {
       background: rgba(90, 103, 216, 0.95) !important;
       backdrop-filter: blur(10px);
+    }
+
+    /* Visual feedback for changed fields */
+    .form-control.changed,
+    .form-select.changed {
+      border-color: #ffc107 !important;
+      box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25) !important;
+      background-color: rgba(255, 193, 7, 0.05);
     }
   </style>
 </head>
@@ -147,10 +156,88 @@
     </div>
   </div>
 
+  <!-- JS-->
   <script src="assets/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Custom JavaScript Files -->
   <script src="js/validation.js"></script>
   <script src="js/preview.js"></script>
   <script src="js/alerts.js"></script>
+
+  <!-- New JS for Edit Form: Change Detection -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.querySelector('form'); // Assumes single form in partial
+      if (!form || !<?php echo json_encode($isEdit); ?>) return; // Only for edit mode
+
+      const fieldsToTrack = ['title', 'description', 'category', 'location']; // Add/remove as needed
+      const originalValues = {};
+
+      // Store original values in data attributes (from PHP $issue)
+      fieldsToTrack.forEach(field => {
+        const element = form.querySelector(`[name="${field}"]`);
+        if (element) {
+          originalValues[field] = element.value;
+          element.dataset.originalValue = originalValues[field];
+          // Add change listener for visual feedback
+          element.addEventListener('input', function() {
+            if (this.value !== this.dataset.originalValue) {
+              this.classList.add('changed');
+            } else {
+              this.classList.remove('changed');
+            }
+          });
+        }
+      });
+
+      // Handle image separately (file input can't be pre-filled, but check if new file selected)
+      const imageInput = form.querySelector('[name="image"]');
+      if (imageInput) {
+        originalValues.hasImage = <?php echo json_encode(isset($issue['image']) && $issue['image']); ?>;
+        imageInput.addEventListener('change', function() {
+          this.classList.toggle('changed', this.files.length > 0);
+        });
+      }
+
+      // On submit: Check for changes
+      form.addEventListener('submit', function(e) {
+        let hasChanges = false;
+
+        // Check text/select fields
+        fieldsToTrack.forEach(field => {
+          const element = form.querySelector(`[name="${field}"]`);
+          if (element && element.value !== originalValues[field]) {
+            hasChanges = true;
+          }
+        });
+
+        // FIXED Image Check: Any new file upload = change (replace/add, regardless of original)
+        if (imageInput && imageInput.files.length > 0) {
+          hasChanges = true;
+        }
+        // If no new file: No image change (keep original or none)
+        // (For future removal: Add checkbox and check if checked)
+
+        // Debug log (remove in prod)
+        console.log('Detected changes:', hasChanges);
+
+        if (!hasChanges) {
+          e.preventDefault();
+          // Show toast (reuse your alerts.js if it has showToast; otherwise, basic alert)
+          if (typeof showToast === 'function') { // Assuming alerts.js has this
+            showToast('No changes detected!', 'Redirecting back to details.', 'info');
+          } else {
+            alert('No changes detected! Redirecting back to details.');
+          }
+          // Redirect after short delay
+          setTimeout(() => {
+            window.location.href = `index.php?action=show&id=<?php echo $issue['id']; ?>`;
+          }, 1000);
+          return false;
+        }
+      });
+    });
+  </script>
 
 </body>
 

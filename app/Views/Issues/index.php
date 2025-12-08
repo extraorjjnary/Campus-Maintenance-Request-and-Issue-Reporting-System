@@ -11,7 +11,8 @@
   <link rel="stylesheet" href="assets/css/dataTables.bootstrap5.min.css">
 
   <style>
-    /* Enhanced purple gradient background */
+    /* Minimal Css internal only, if bootstrap can't handle */
+
     body {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       position: relative;

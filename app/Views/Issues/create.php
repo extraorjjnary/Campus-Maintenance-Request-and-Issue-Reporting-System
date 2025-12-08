@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="assets/css/bootstrap-icons.css">
 
   <style>
-    /* Enhanced purple gradient background */
+    /* Minimal css internal only, if bootstrap can't handle */
     body {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       position: relative;
@@ -148,7 +148,11 @@
     </div>
   </div>
 
+  <!-- JS -->
   <script src="assets/js/bootstrap.bundle.min.js"></script>
+
+
+  <!-- Custom JavaScript Files -->
   <script src="js/validation.js"></script>
   <script src="js/preview.js"></script>
   <script src="js/alerts.js"></script>

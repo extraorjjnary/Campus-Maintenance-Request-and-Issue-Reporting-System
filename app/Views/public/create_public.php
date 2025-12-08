@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="assets/css/bootstrap-icons.css">
 
   <style>
-    /* Enhanced purple gradient background */
+    /* Minimal Css internal only, if bootstrap can't handle */
     body {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       position: relative;
@@ -38,10 +38,40 @@
       background: rgba(90, 103, 216, 0.95) !important;
       backdrop-filter: blur(10px);
     }
+
+    /* Toast positioning for public create page */
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1090;
+    }
   </style>
 </head>
 
 <body class="min-vh-100">
+  <!-- Toast Container -->
+  <div class="toast-container">
+    <!-- Error Toast (for validation errors) -->
+    <?php if (isset($_SESSION['errors'])): ?>
+      <div class="toast align-items-center text-white bg-danger border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+        <div class="d-flex">
+          <div class="toast-body">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <strong>Validation Errors:</strong>
+            <ul class="mb-0 mt-2">
+              <?php foreach ($_SESSION['errors'] as $error): ?>
+                <li><?php echo htmlspecialchars($error); ?></li>
+              <?php endforeach; ?>
+            </ul>
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+      </div>
+      <?php unset($_SESSION['errors']); ?>
+    <?php endif; ?>
+  </div>
+
   <div class="content-wrapper">
     <!-- Public Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark navbar-gradient shadow-lg py-3">
@@ -87,20 +117,6 @@
     </nav>
 
     <div class="container mt-4 mb-5">
-      <!-- Error Messages (Only show validation errors on this page) -->
-      <?php if (isset($_SESSION['errors'])): ?>
-        <div class="alert alert-danger alert-dismissible fade show border-0 shadow border-start border-danger border-5 bg-white" role="alert">
-          <i class="bi bi-exclamation-triangle-fill me-2"></i><strong>Validation Errors:</strong>
-          <ul class="mb-0 mt-2">
-            <?php foreach ($_SESSION['errors'] as $error): ?>
-              <li><?php echo htmlspecialchars($error); ?></li>
-            <?php endforeach; ?>
-          </ul>
-          <?php unset($_SESSION['errors']); ?>
-          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-      <?php endif; ?>
-
       <div class="row justify-content-center">
         <div class="col-lg-10">
           <div class="card shadow border-0 rounded-4 bg-white">
@@ -124,23 +140,12 @@
         </div>
       </div>
     </div>
+  </div>
 
-    <script src="assets/js/bootstrap.bundle.min.js"></script>
-    <script src="js/validation.js"></script>
-    <script src="js/preview.js"></script>
-
-    <script>
-      // Auto-dismiss error alert after 5 seconds
-      document.addEventListener('DOMContentLoaded', function() {
-        const errorAlert = document.querySelector('.alert-danger');
-        if (errorAlert) {
-          setTimeout(function() {
-            const bsAlert = new bootstrap.Alert(errorAlert);
-            bsAlert.close();
-          }, 5000);
-        }
-      });
-    </script>
+  <script src="assets/js/bootstrap.bundle.min.js"></script>
+  <script src="js/validation.js"></script>
+  <script src="js/preview.js"></script>
+  <script src="js/alerts.js"></script>
 
 </body>
 

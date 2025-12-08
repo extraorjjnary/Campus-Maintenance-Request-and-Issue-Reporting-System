@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="assets/css/bootstrap-icons.css">
 
   <style>
-    /* Enhanced background with subtle pattern */
+    /* Minimal custom CSS: Gradients, animations, and essential overrides only */
     body {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       position: relative;
@@ -42,9 +42,13 @@
 
     .hero-icon {
       font-size: 5rem;
-      color: #ffffff;
+      color: #1e3a8a !important;
+      /* Dark blue for high contrast on gradient */
       animation: float 3s ease-in-out infinite;
-      filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
+      filter: drop-shadow(0 10px 20px rgba(30, 58, 138, 0.6));
+      /* Stronger shadow for visibility */
+      display: inline-block;
+      /* Simple display for icon only */
     }
 
     @keyframes float {
@@ -60,7 +64,7 @@
     }
 
     .hero-section {
-      background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.98));
+      background: rgba(255, 255, 255, 0.95);
       border-radius: 30px;
       backdrop-filter: blur(10px);
     }
@@ -73,7 +77,7 @@
 
     .feature-card:hover {
       transform: translateY(-10px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15) !important;
       border-color: #667eea;
     }
 
@@ -81,8 +85,8 @@
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       width: 80px;
       height: 80px;
-      border-radius: 20px;
-      display: flex;
+      border-radius: 50%;
+      display: flex !important;
       align-items: center;
       justify-content: center;
       margin: 0 auto;
@@ -90,7 +94,7 @@
     }
 
     .feature-icon-wrapper i {
-      color: white;
+      color: white !important;
       font-size: 2.5rem;
     }
 
@@ -111,30 +115,12 @@
       box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5);
     }
 
-    .alert-banner {
-      animation: slideDown 0.5s ease-out;
-      background: rgba(255, 255, 255, 0.98);
-      backdrop-filter: blur(10px);
-    }
-
-    @keyframes slideDown {
-      from {
-        opacity: 0;
-        transform: translateY(-20px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
     .section-title {
       color: white;
       text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     }
 
-    /* Floating shapes decoration */
+    /* Floating shapes (minimal) */
     .shape {
       position: fixed;
       border-radius: 50%;
@@ -157,6 +143,14 @@
       background: white;
       bottom: -50px;
       left: -50px;
+    }
+
+    /* Toast container */
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1090;
     }
   </style>
 </head>
@@ -188,53 +182,59 @@
       </div>
     </nav>
 
-    <!-- Success Alert Banner -->
-    <?php if (isset($_SESSION['success'])): ?>
-      <div class="container mt-3">
-        <div class="alert alert-success alert-dismissible fade show shadow border-0 border-start border-success border-4 alert-banner" role="alert" id="successAlert">
-          <i class="bi bi-check-circle-fill me-2"></i>
-          <strong><?php echo htmlspecialchars($_SESSION['success']);
-                  unset($_SESSION['success']); ?></strong>
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <!-- Toast Container -->
+    <div class="toast-container">
+      <!-- Success Toast -->
+      <?php if (isset($_SESSION['success'])): ?>
+        <div class="toast align-items-center text-white bg-success border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="4000">
+          <div class="d-flex">
+            <div class="toast-body">
+              <i class="bi bi-check-circle-fill me-2"></i>
+              <strong><?php echo htmlspecialchars($_SESSION['success']);
+                      unset($_SESSION['success']); ?></strong>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
         </div>
-      </div>
-    <?php endif; ?>
+      <?php endif; ?>
 
-    <!-- Error Alert Banner -->
-    <?php if (isset($_SESSION['errors'])): ?>
-      <div class="container mt-3">
-        <div class="alert alert-danger alert-dismissible fade show shadow border-0 border-start border-danger border-4 alert-banner" role="alert" id="errorAlert">
-          <i class="bi bi-exclamation-triangle-fill me-2"></i>
-          <strong>Error:</strong>
-          <ul class="mb-0 mt-2">
-            <?php foreach ($_SESSION['errors'] as $error): ?>
-              <li><?php echo htmlspecialchars($error); ?></li>
-            <?php endforeach; ?>
-          </ul>
-          <?php unset($_SESSION['errors']); ?>
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      <!-- Error Toast -->
+      <?php if (isset($_SESSION['errors'])): ?>
+        <div class="toast align-items-center text-white bg-danger border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+          <div class="d-flex">
+            <div class="toast-body">
+              <i class="bi bi-exclamation-triangle-fill me-2"></i>
+              <strong>Error:</strong>
+              <ul class="mb-0 mt-2">
+                <?php foreach ($_SESSION['errors'] as $error): ?>
+                  <li><?php echo htmlspecialchars($error); ?></li>
+                <?php endforeach; ?>
+              </ul>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
         </div>
-      </div>
-    <?php endif; ?>
+      <?php endif; ?>
+    </div>
 
     <!-- Hero Section -->
     <div class="container my-5">
-      <div class="hero-section shadow-lg p-5 text-center">
+      <div class="hero-section shadow-lg p-5 text-center rounded-5">
         <div class="hero-icon mb-4">
           <i class="bi bi-tools"></i>
         </div>
 
-        <h1 class="display-4 fw-bold mb-4" style="color: #1e3a8a;">
+        <h1 class="display-4 fw-bold mb-4 text-primary">
           Campus Maintenance & Issue Reporting System
         </h1>
 
         <div class="quote-card rounded-4 p-4 mb-5 mx-auto" style="max-width: 800px;">
           <blockquote class="mb-0">
-            <p class="fs-5 fst-italic mb-3" style="color: #475569;">
+            <p class="fs-5 fst-italic mb-3 text-secondary">
               "A well-maintained campus is the foundation of a thriving learning environment.
               Together, we build excellence one report at a time."
             </p>
-            <footer class="text-end fw-semibold" style="color: #667eea;">
+            <footer class="text-end fw-semibold text-primary">
               — Your Campus Maintenance Team
             </footer>
           </blockquote>
@@ -257,7 +257,7 @@
               <div class="feature-icon-wrapper mb-4">
                 <i class="bi bi-lightning-charge-fill"></i>
               </div>
-              <h4 class="fw-bold mb-3" style="color: #1e3a8a;">Fast Response</h4>
+              <h4 class="fw-bold mb-3 text-primary">Fast Response</h4>
               <p class="text-muted">
                 Your reports are immediately sent to our maintenance team for quick action and resolution.
               </p>
@@ -271,7 +271,7 @@
               <div class="feature-icon-wrapper mb-4">
                 <i class="bi bi-shield-check"></i>
               </div>
-              <h4 class="fw-bold mb-3" style="color: #1e3a8a;">Safe Campus</h4>
+              <h4 class="fw-bold mb-3 text-primary">Safe Campus</h4>
               <p class="text-muted">
                 Help us maintain a safe and functional environment for everyone on campus.
               </p>
@@ -285,7 +285,7 @@
               <div class="feature-icon-wrapper mb-4">
                 <i class="bi bi-people-fill"></i>
               </div>
-              <h4 class="fw-bold mb-3" style="color: #1e3a8a;">Community Effort</h4>
+              <h4 class="fw-bold mb-3 text-primary">Community Effort</h4>
               <p class="text-muted">
                 Every report matters. Be part of the solution and contribute to campus improvement.
               </p>
@@ -308,27 +308,8 @@
   </div>
 
   <script src="assets/js/bootstrap.bundle.min.js"></script>
+  <script src="js/alerts.js"></script>
 
-  <script>
-    // Auto-dismiss alerts after 4 seconds
-    document.addEventListener('DOMContentLoaded', function() {
-      const successAlert = document.getElementById('successAlert');
-      if (successAlert) {
-        setTimeout(function() {
-          const bsAlert = new bootstrap.Alert(successAlert);
-          bsAlert.close();
-        }, 4000);
-      }
-
-      const errorAlert = document.getElementById('errorAlert');
-      if (errorAlert) {
-        setTimeout(function() {
-          const bsAlert = new bootstrap.Alert(errorAlert);
-          bsAlert.close();
-        }, 5000);
-      }
-    });
-  </script>
 </body>
 
 </html>
